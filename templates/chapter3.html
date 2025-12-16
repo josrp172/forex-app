@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 3: Sahig at Kisame</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #2b2b2b 0%, #434343 100%);
+            /* Elegant Dark/Gold Theme */
+            color: #ecf0f1;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow-y: auto;
+        }
+
+        .chapter-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            padding-bottom: 200px;
+        }
+
+        /* Glassy Card (Premium) */
+        .section-card {
+            background: rgba(30, 30, 30, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            /* Gold hint */
+            border-radius: 30px;
+            padding: 45px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            margin-bottom: 40px;
+            text-align: center;
+            animation: fadeInUp 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+            position: relative;
+        }
+
+        .section-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #f1c40f, #e67e22, #f1c40f);
+            border-radius: 30px 30px 0 0;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .nav-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .home-link {
+            text-decoration: none;
+            color: #dcdcdc;
+            font-weight: 700;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 20px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .home-link:hover {
+            color: #f1c40f;
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #f1c40f;
+        }
+
+        h1 {
+            font-size: 3rem;
+            background: linear-gradient(to right, #cfc09f 0%, #ffecb3 45%, #c3a343 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            filter: drop-shadow(0 2px 0 rgba(0, 0, 0, 0.5));
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            color: #ffd700;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.2rem;
+            line-height: 1.7;
+            color: #bdc3c7;
+        }
+
+        /* MONITOR & CHART STYLES (Real Trading View) */
+        .monitor-frame {
+            background: #1c1c1c;
+            padding: 0;
+            border-radius: 20px;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+            margin-bottom: 50px;
+            border: 1px solid #333;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Premium Glow */
+        .monitor-frame::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            box-shadow: inset 0 0 0 1px rgba(255, 215, 0, 0.1);
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .next-chapter-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #f1c40f, #d35400);
+            color: white;
+            padding: 18px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 800;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 10px 30px rgba(243, 156, 18, 0.3);
+            margin-top: 30px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .next-chapter-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(243, 156, 18, 0.5);
+        }
+
+        .chart-header {
+            background: #252526;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #ecf0f1;
+            font-size: 1rem;
+            font-weight: bold;
+            border-bottom: 1px solid #333;
+        }
+
+        .chart-body {
+            position: relative;
+            height: 350px;
+            background: #121212;
+            display: flex;
+        }
+
+        .chart-screen {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+            padding: 0 20px;
+            gap: 15px;
+        }
+
+        .price-axis {
+            width: 60px;
+            background: #1e1e1e;
+            border-left: 1px solid #2a2a2a;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 10px 0;
+            color: #7f8c8d;
+            font-size: 0.75rem;
+            text-align: center;
+            font-family: monospace;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* GRID */
+        .grid-line {
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.03);
+            left: 0;
+        }
+
+        /* S&R LINES & LABELS */
+        .level-line {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            z-index: 5;
+            transition: all 0.5s;
+        }
+
+        .level-label {
+            position: absolute;
+            left: 10px;
+            bottom: 4px;
+            /* Sit on top of line */
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .resistance-line {
+            top: 50px;
+            border-bottom: 2px dashed #e74c3c;
+        }
+
+        .resistance-line .level-label {
+            background: #e74c3c;
+        }
+
+        .support-line {
+            bottom: 50px;
+            border-top: 2px dashed #2ecc71;
+        }
+
+        .support-line .level-label {
+            background: #2ecc71;
+        }
+
+        /* SUGGESTION TOAST */
+        .signal-toast {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(44, 62, 80, 0.95);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 20;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            pointer-events: none;
+        }
+
+        .signal-toast.show {
+            top: 30px;
+            opacity: 1;
+        }
+
+        .signal-tag {
+            text-transform: uppercase;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            background: #fff;
+            color: #2c3e50;
+        }
+
+        /* CANDLES */
+        .candle-stick {
+            width: 12px;
+            border-radius: 2px;
+            position: relative;
+            animation: popIn 0.5s ease-out forwards;
+            flex-shrink: 0;
+            /* Don't squish */
+        }
+
+        .candle-stick::before,
+        .candle-stick::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            background: inherit;
+        }
+
+        .candle-stick::before {
+            top: -10px;
+            height: 10px;
+        }
+
+        /* Wick Up */
+        .candle-stick::after {
+            bottom: -10px;
+            height: 10px;
+        }
+
+        /* Wick Down */
+
+        .bull {
+            background: #2ecc71;
+        }
+
+        .bear {
+            background: #e74c3c;
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scaleY(0);
+                opacity: 0;
+            }
+
+            to {
+                transform: scaleY(1);
+                opacity: 1;
+            }
+        }
+
+        /* STEPS LIST UI */
+        .steps-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .step-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .step-card.active {
+            border-color: #3498db;
+            background: #fbfdff;
+        }
+
+        .step-card.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 6px;
+            background: #3498db;
+        }
+
+        .step-number {
+            background: #ecf0f1;
+            color: #7f8c8d;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            transition: all 0.3s;
+        }
+
+        .step-card.active .step-number {
+            background: #3498db;
+            color: white;
+        }
+
+        .step-content h3 {
+            margin: 0 0 5px 0;
+            font-size: 1.2rem;
+            color: #2c3e50;
+        }
+
+        .step-content p {
+            margin: 0;
+            font-size: 0.95rem;
+            color: #7f8c8d;
+            line-height: 1.5;
+        }
+
+        .play-icon {
+            font-size: 1.5rem;
+            color: #bdc3c7;
+            margin-left: auto;
+        }
+
+        .step-card.active .play-icon {
+            color: #3498db;
+        }
+
+        /* NEW ANIMATIONS */
+        @keyframes shakeToast {
+
+            0%,
+            100% {
+                transform: translateX(-50%);
+            }
+
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-52%);
+            }
+
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(-48%);
+            }
+        }
+
+        @keyframes pulseLine {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+            }
+        }
+
+        @keyframes fadeInStagger {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .step-card {
+            animation: fadeInStagger 0.5s ease backwards;
+        }
+
+        .step-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .step-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .step-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .step-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .step-card:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="chapter-container">
+        <header class="nav-header">
+            <a href="{{ url_for('index', _anchor='map') }}" class="home-link"><span>←</span> Back to Map</a>
+            <div>
+                <span style="font-size: 0.8rem; color: #aaa; text-transform: uppercase;">Chapter 3</span>
+                <h1 style="margin: 0; color: #d35400;">Sahig at Kisame 🏗️</h1>
+            </div>
+        </header>
+
+        <div class="section-card">
+            <p style="margin: 0; font-size: 1.15rem; line-height:1.6;">
+                Sa charts, hindi "bahay" ang nakikita mo kundi <strong>Lines</strong>. <br>
+                Price bounces up and down between them. Parang ping-pong lang! 🏓
+            </p>
+        </div>
+
+        <!-- CHART FRAME (JPY/PHP) -->
+        <div class="monitor-frame">
+            <!-- Header -->
+            <div class="chart-header">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <img src="https://flagcdn.com/w20/jp.png" style="width:20px;">
+                    <img src="https://flagcdn.com/w20/ph.png" style="width:20px;">
+                    <span>JPY/PHP</span>
+                </div>
+                <span style="color:#2ecc71; animation: blink 2s infinite;">●</span> Market Open</span>
+            </div>
+
+            <style>
+                @keyframes blink {
+                    0% {
+                        opacity: 1;
+                    }
+
+                    50% {
+                        opacity: 0.4;
+                    }
+
+                    100% {
+                        opacity: 1;
+                    }
+                }
+            </style>
+
+            <div class="chart-body">
+                <!-- Main Chart Area -->
+                <div class="chart-screen" id="main-chart">
+                    <!-- Signal Toast -->
+                    <div id="signal-toast" class="signal-toast">
+                        <span class="signal-tag">TIPS</span>
+                        <span id="signal-text">Wait for candle close...</span>
+                    </div>
+
+                    <!-- Static Grid -->
+                    <div class="grid-line" style="top:25%"></div>
+                    <div class="grid-line" style="top:50%"></div>
+                    <div class="grid-line" style="top:75%"></div>
+
+                    <!-- DYNAMIC ZONES (Injected by JS) -->
+                    <div id="zone-resistance" class="level-line resistance-line">
+                        <span class="level-label">RESISTANCE (0.4000)</span>
+                    </div>
+                    <div id="zone-support" class="level-line support-line">
+                        <span class="level-label">SUPPORT (0.3600)</span>
+                    </div>
+
+                    <!-- CANDLES CONTAINER -->
+                    <div id="candles-container"
+                        style="display:flex; align-items:flex-end; height:100%; gap:15px; width:100%;">
+                        <!-- Initial Candles -->
+                    </div>
+                </div>
+
+                <!-- Right Price Axis -->
+                <div class="price-axis">
+                    <span>0.4200</span>
+                    <span>0.4000</span>
+                    <span>0.3800</span>
+                    <span>0.3600</span>
+                    <span>0.3400</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEPS LIST (Replaces Buttons) -->
+        <div class="steps-list">
+
+            <!-- Step 1 -->
+            <div class="step-card active" id="step-bounce" onclick="playScenario('bounce')">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3 style="color:#2ecc71;">Support Bounce (Sahig)</h3>
+                    <p>Tumama sa Green Line (Sahig). Sinasalo ng Buyers. <br> Result: <strong>Tatalbog Pataas!</strong>
+                        🚀</p>
+                    <div style="margin-top:5px; font-weight:bold; color:#27ae60; font-size:0.85rem;">💡 Tip: Pag may
+                        Green Candle na sa sahig, <strong>BUY</strong> na!</div>
+                </div>
+                <div class="play-icon">▶</div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step-card" id="step-reject" onclick="playScenario('reject')">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3 style="color:#e74c3c;">Resistance Rejection (Kisame)</h3>
+                    <p>Tumama sa Red Line (Kisame). Tinutulak ng Sellers. <br> Result: <strong>Mauuntog at
+                            Babagsak.</strong> 🛑</p>
+                    <div style="margin-top:5px; font-weight:bold; color:#c0392b; font-size:0.85rem;">💡 Tip: Pag may Red
+                        Candle na sa kisame, <strong>SELL</strong> agad!</div>
+                </div>
+                <div class="play-icon">▶</div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step-card" id="step-breakout" onclick="playScenario('breakout')">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3 style="color:#34495e;">The Breakout (Basag!)</h3>
+                    <p>Sobrang lakas ng Buyers! Nabasag ang kisame! <br> Result: <strong>Lilipad na to to the
+                            moon!</strong> 💥</p>
+                    <div style="margin-top:5px; font-weight:bold; color:#2c3e50; font-size:0.85rem;">💡 Tip: Wait mo
+                        mag-retest, tapos sabay ka sa <strong>BUY</strong>!</div>
+                </div>
+                <div class="play-icon">▶</div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="step-card" id="step-flip" onclick="playScenario('flip')">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3 style="color:#8e44ad;">Role Reversal (S&R Flip) 🔄</h3>
+                    <p>Old Resistance becomes New Support. <br> "Ang dating Kisame, ngayon ay <strong>Sahig</strong>
+                        na!"</p>
+                    <div style="margin-top:5px; font-weight:bold; color:#8e44ad; font-size:0.85rem;">💡 Tip: Ito ang
+                        best entry! Buy sa retest.</div>
+                </div>
+                <div class="play-icon">▶</div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="step-card" id="step-fakeout" onclick="playScenario('fakeout')">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                    <h3 style="color:#e67e22;">The Fakeout (Trap!) ⚠️</h3>
+                    <p>Akala mo breakout na, pero bumalik sa loob! <br> Result: <strong>Trapped Buyers & Crash.</strong>
+                    </p>
+                    <div style="margin-top:5px; font-weight:bold; color:#d35400; font-size:0.85rem;">💡 Tip: Wag
+                        magmadali! Wait for candle close.</div>
+                </div>
+                <div class="play-icon">▶</div>
+            </div>
+
+        </div>
+
+        <div style="text-align: center; margin-top: 50px;">
+            <a href="{{ url_for('chapter4') }}" class="next-chapter-btn">
+                Complete Chapter 3 & Go to Simulator 🚀
+            </a>
+        </div>
+
+    </div>
+
+    <script>
+        window.addEventListener('load', () => {
+            const nextBtn = document.querySelector('.next-chapter-btn');
+            if (nextBtn) {
+                nextBtn.onclick = function (e) {
+                    e.preventDefault();
+                    // Set Progress to 3 (Unlock Ch 4)
+                    let current = parseInt(localStorage.getItem('forex_progress') || 0);
+                    if (current < 3) {
+                        localStorage.setItem('forex_progress', 3);
+                    }
+                    window.location.href = "{{ url_for('index', _anchor='map') }}";
+                };
+                nextBtn.innerText = "Complete Level 3 🏆";
+            }
+        });
+
+        const canvas = document.getElementById('candles-container');
+        const resLine = document.getElementById('zone-resistance');
+        const signalToast = document.getElementById('signal-toast');
+        const signalText = document.getElementById('signal-text');
+
+        // Helper Effects
+        function triggerPulse(el) {
+            el.style.animation = 'none';
+            el.offsetHeight; /* trigger reflow */
+            el.style.animation = 'pulseLine 0.5s ease-out';
+        }
+
+        function triggerShake(el) {
+            el.style.animation = 'none';
+            el.offsetHeight;
+            el.style.animation = 'shakeToast 0.5s ease-in-out';
+        }
+
+        function clearChart() {
+            canvas.innerHTML = '';
+            // Reset Line styles
+            resLine.classList.remove('support-line', 'new-support');
+            resLine.classList.add('resistance-line');
+            resLine.style.top = "50px";
+            resLine.style.bottom = "auto";
+
+            // Update Label Text
+            const label = resLine.querySelector('.level-label');
+            if (label) label.innerText = "RESISTANCE (0.4000)";
+
+            resLine.style.opacity = 1;
+
+            // Reset Style Overrides
+            resLine.style.background = "";
+            resLine.style.borderBottom = "";
+            resLine.style.borderTop = "";
+
+            // Hide Toast
+            signalToast.classList.remove('show');
+        }
+
+        function showSignal(msg, color) {
+            signalText.innerText = msg;
+            signalToast.style.borderLeft = `4px solid ${color}`;
+            signalToast.classList.add('show');
+            triggerShake(signalToast);
+        }
+
+        function addCandle(type, height, marginBottom, delay) {
+            const c = document.createElement('div');
+            c.className = `candle-stick ${type}`;
+            c.style.height = height + 'px';
+            c.style.marginBottom = marginBottom + 'px';
+            c.style.animationDelay = delay + 's';
+            canvas.appendChild(c);
+        }
+
+        function playScenario(type) {
+            // UI Highlight
+            document.querySelectorAll('.step-card').forEach(el => el.classList.remove('active'));
+            document.getElementById(`step-${type}`).classList.add('active');
+
+            clearChart();
+
+            if (type === 'bounce') {
+                // Scenario: Fall then Bounce
+
+                // 1. Initial Drop
+                const candles = [
+                    { t: 'bear', h: 60, m: 100 }, { t: 'bear', h: 50, m: 80 }, { t: 'bear', h: 70, m: 50 }, // Drop
+                    { t: 'bull', h: 20, m: 45 }, // Touch line
+                    { t: 'bull', h: 60, m: 55 }, { t: 'bull', h: 80, m: 70 }, { t: 'bull', h: 100, m: 90 } // Fly
+                ];
+                candles.forEach((c, i) => addCandle(c.t, c.h, c.m, i * 0.2));
+
+                // Pulse Effect on Line when hit
+                setTimeout(() => triggerPulse(document.getElementById('zone-support')), 800); // Approx when drop finishes
+
+                // Signal
+                setTimeout(() => showSignal("Green Candle sa Sahig? BUY na girl! 🚀", "#2ecc71"), 1200);
+
+            } else if (type === 'reject') {
+                // Scenario: Climb then Crash
+                const candles = [
+                    { t: 'bull', h: 60, m: 100 }, { t: 'bull', h: 70, m: 150 }, { t: 'bull', h: 50, m: 190 }, // Climb
+                    { t: 'bear', h: 30, m: 225 }, // Touch Resistance
+                    { t: 'bear', h: 60, m: 170 }, { t: 'bear', h: 80, m: 120 }, { t: 'bear', h: 90, m: 50 } // Crash
+                ];
+                candles.forEach((c, i) => addCandle(c.t, c.h, c.m, i * 0.2));
+
+                // Pulse Effect on Line
+                setTimeout(() => triggerPulse(document.getElementById('zone-resistance')), 800);
+
+                // Signal
+                setTimeout(() => showSignal("Red Candle sa Kisame? SELL na bago bumagsak! 🛑", "#e74c3c"), 1200);
+
+            } else if (type === 'breakout') {
+                const candles = [
+                    { t: 'bull', h: 50, m: 120 }, { t: 'bull', h: 60, m: 160 }, { t: 'bear', h: 30, m: 180 }, // Build up
+                    { t: 'bull', h: 80, m: 180 } // Test
+                ];
+
+                // Add first batch
+                candles.forEach((c, i) => addCandle(c.t, c.h, c.m, i * 0.3));
+
+                // Add the Breakout Candle with special effect
+                setTimeout(() => {
+                    addCandle('bull', 150, 200, 0); // Big Break
+
+                    // EFFECT: Change Line Color
+                    setTimeout(() => {
+                        triggerPulse(resLine); // Pulse breakout
+
+                        const label = resLine.querySelector('.level-label');
+                        if (label) label.innerText = "NEW SUPPORT (Broken!)";
+
+                        resLine.style.background = "rgba(46, 204, 113, 0.1)";
+                        resLine.style.borderBottom = "none";
+                        resLine.style.borderTop = "2px dashed #2ecc71"; // Turn Green
+
+                        resLine.classList.remove('resistance-line');
+                        resLine.classList.add('support-line'); // This changes the label color to green automatically via CSS
+
+                    }, 500);
+
+                    // Signal
+                    setTimeout(() => showSignal("Nabasag ang Kisame! Wait for pullback then BUY! 💥", "#f1c40f"), 1000);
+
+                }, 1500);
+            } else if (type === 'flip') {
+                // Breakout -> Retest -> Bounce
+                const candles = [
+                    { t: 'bull', h: 60, m: 140 }, { t: 'bull', h: 80, m: 180 }, // Breakout
+                ];
+                candles.forEach((c, i) => addCandle(c.t, c.h, c.m, i * 0.3));
+
+                setTimeout(() => {
+                    // Update Line Concept
+                    const label = resLine.querySelector('.level-label');
+                    if (label) label.innerText = "NEW SUPPORT (Retest me!)";
+                    resLine.classList.remove('resistance-line');
+                    resLine.classList.add('support-line');
+                    resLine.style.borderTop = "2px dashed #2ecc71";
+                    resLine.style.borderBottom = "none";
+
+                    // Retest Candles (Dip to line)
+                    // Resistance Line is at 'top: 50px' of .chart-screen (height 350). So line is at 300px from bottom.
+
+                    addCandle('bull', 100, 220, 0); // Reach 320 (Peak)
+
+                    setTimeout(() => {
+                        // Retest: Drop back to near 300
+                        addCandle('bear', 60, 260, 0.2); // Top 320, Bottom 260
+                        addCandle('bull', 40, 260, 0.4); // Bounce off 260 (Support area)
+                        addCandle('bull', 120, 300, 0.6); // Fly
+
+                        showSignal("Nag-bounce sa dating kisame? Valid S&R Flip! 🔄", "#8e44ad");
+                    }, 500);
+
+                }, 800);
+
+            } else if (type === 'fakeout') {
+                // Breakout -> Trap -> Dump
+                const pre = [{ t: 'bull', h: 90, m: 200 }]; // Near line
+                pre.forEach((c, i) => addCandle(c.t, c.h, c.m, i * 0.2));
+
+                setTimeout(() => {
+                    addCandle('bull', 60, 280, 0); // Peek above 300 line (340 tip) -> Looks like breakout
+                    showSignal("Breakout na ba?! 🤔", "#f39c12");
+
+                    setTimeout(() => {
+                        // THE TRAP: Big Red enveloping the green
+                        addCandle('bear', 150, 150, 0.2); // Smashing back down below line
+                        showSignal("NA-SCAM KA GIRL! Fakeout lang! 📉", "#e74c3c");
+
+                        setTimeout(() => {
+                            addCandle('bear', 100, 50, 0.2); // Crash
+                        }, 500);
+
+                    }, 1000);
+                }, 500);
+            }
+        }
+
+        // Auto play first
+        setTimeout(() => playScenario('bounce'), 500);
+    </script>
+    <script src="{{ url_for('static', filename='sound_manager.js') }}"></script>
+</body>
+
+</html>
