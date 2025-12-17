@@ -126,8 +126,7 @@
         window.addEventListener('load', () => {
             // Check if we came from Welcome Page
             if (sessionStorage.getItem('music_autoplay_authorized') === 'true') {
-                // Try to consume the gesture authorization immediately if possible (though reloading page usually resets context)
-                // This flag mainly hints SoundManager to be optimistic.
+                // Try to consume the gesture authorization immediately if possible
             }
 
             // localStorage key 'forex_progress' => 0 (start), 1 (ch1 done), 2 (ch2 done), 3 (ch3 done)
@@ -166,11 +165,24 @@
                 }
 
                 // Force visibility after small delay to fix any animation glitches
+                // This ensures that even if CSS animation fails, JS enforces visibility
                 setTimeout(() => {
                     card.style.opacity = '1';
                     card.style.transform = 'translateY(0)';
                 }, 100 + (index * 100));
             });
+
+            // Cleanup function to lock final state and remove animation rules
+            const finalizeAnimations = () => {
+                setTimeout(() => {
+                    cards.forEach(card => {
+                        card.style.animation = 'none';
+                        card.style.opacity = '1';
+                        // Ensure transform is reset so it doesn't float
+                        card.style.transform = 'translateY(0)';
+                    });
+                }, 2000); // Wait for entrance animations to finish
+            };
 
             // Auto-open Map if requested via URL hash
             if (window.location.hash === '#map') {
@@ -179,7 +191,16 @@
                     mapLayer.classList.remove('hidden');
                     // Reset scroll to top
                     mapLayer.scrollTop = 0;
+                    finalizeAnimations();
                 }
+            }
+
+            // Trigger cleanup when Start is clicked
+            const startBtn = document.getElementById('start-btn');
+            if (startBtn) {
+                startBtn.addEventListener('click', () => {
+                    finalizeAnimations();
+                });
             }
         });
     </script>
