@@ -151,9 +151,45 @@
         }
 
         .term-desc {
-            font-size: 0.9rem;
-            color: #bdc3c7;
-            line-height: 1.5;
+            font-size: 0.95rem;
+            /* Slightly larger */
+            color: #d0d7de;
+            /* Brighter grey */
+            line-height: 1.6;
+        }
+
+        .main-desc {
+            margin-bottom: 15px;
+        }
+
+        .insight-box {
+            background: rgba(255, 255, 255, 0.08);
+            /* Distinct background */
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.85rem;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            border-left: 3px solid transparent;
+        }
+
+        .insight-box.expectation {
+            background: rgba(52, 152, 219, 0.15);
+            border-left-color: #3498db;
+            color: #d6eaf8;
+        }
+
+        .insight-box.tip {
+            background: rgba(241, 196, 15, 0.15);
+            border-left-color: #f1c40f;
+            color: #fcf3cf;
+        }
+
+        .insight-box .icon {
+            font-size: 1.1rem;
+            line-height: 1;
         }
 
         /* Pattern Visuals */
@@ -360,21 +396,25 @@
                 <div class="term-grid">
                     <div class="term-box">
                         <div class="term-title" style="color:#2ecc71;">Bullish 🐂</div>
-                        <div class="term-desc">Price is going UP. Buyers are in control. Think "Green".</div>
+                        <div class="term-desc">Umaakyat ang presyo! Hawak ng mga Buyers ang manibela. Isipin mo
+                            <strong>Green</strong> means Go, Go, Go!
+                        </div>
                     </div>
                     <div class="term-box">
                         <div class="term-title" style="color:#e74c3c;">Bearish 🐻</div>
-                        <div class="term-desc">Price is going DOWN. Sellers are dominating. Think "Red".</div>
+                        <div class="term-desc">Bumabagsak ang presyo. Binubugbog ng Sellers ang market. Pag
+                            <strong>Red</strong>, mag-ingat ka, baka ma-dead!
+                        </div>
                     </div>
                     <div class="term-box">
                         <div class="term-title" style="color:#f1c40f;">Consolidation 😴</div>
-                        <div class="term-desc">Price is moving sideways (sleeping). Neither buyers nor sellers are
-                            winning yet.</div>
+                        <div class="term-desc">Tutulog-tulog ang market (Side-to-side). Walang panalo sa Buyers o
+                            Sellers. Pahinga muna ang drama.</div>
                     </div>
                     <div class="term-box">
                         <div class="term-title" style="color:#3498db;">Breakout 💥</div>
-                        <div class="term-desc">Price violently escapes a zone (Support/Resistance). Big move incoming!
-                        </div>
+                        <div class="term-desc">Eto na! Nakawala na sa kulungan! Pag nag-<strong>Breakout</strong>,
+                            asahan mo ang malupit na galaw. Sabay na!</div>
                     </div>
                 </div>
             </div>
@@ -447,8 +487,21 @@
                             </div>
                         </div>
                         <div class="term-title">Head & Shoulders</div>
-                        <div class="term-desc">Looks like a person (Shoulder-Head-Shoulder). Signals the end of an
-                            Uptrend. <strong>SELL!</strong></div>
+                        <div class="term-desc">
+                            <div class="main-desc">Mukhang tao (Balikat-Ulo-Balikat). Pag nagpakita 'to, tapos na ang
+                                ligaya ng Uptrend.</div>
+
+                            <div class="insight-box expectation">
+                                <span class="icon">🔮</span>
+                                <div><strong>Expectation:</strong> Pabagsak na 'yan, parang pride mo pag mali ka.</div>
+                            </div>
+
+                            <div class="insight-box tip">
+                                <span class="icon">💡</span>
+                                <div><strong>Important:</strong> Wait mo mag-break sa "Neckline" bago ka mag-SELL. Wag
+                                    excited!</div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Double Bottom -->
@@ -506,8 +559,20 @@
                             </div>
                         </div>
                         <div class="term-title">Double Bottom (W)</div>
-                        <div class="term-desc">Look for the "W" shape. Price tried to go down twice and failed.
-                            <strong>BUY!</strong>
+                        <div class="term-desc">
+                            <div class="main-desc">Hanapin ang "W" shape (W for Win?). Dalawang beses sinubukan ibagsak
+                                pero 'di kinaya. Matibay!</div>
+
+                            <div class="insight-box expectation">
+                                <span class="icon">🔮</span>
+                                <div><strong>Expectation:</strong> Lilipad na 'yan pataas (Reversal).</div>
+                            </div>
+
+                            <div class="insight-box tip">
+                                <span class="icon">💡</span>
+                                <div><strong>Important:</strong> Ang tawag sa ilalim ay "Support". Pag bumwelo na,
+                                    <strong>BUY</strong> na agad!</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -580,9 +645,20 @@
                         </div>
                         <div class="term-title">Bull Flag 🚩</div>
                         <div class="term-desc">
-                            Galing sa taas (Pole), tapos nagpahinga nang slight pababa (Flag). <br>
-                            <strong>Expectation:</strong> Kung akala mo babagsak, joke lang! Iipunin lang lakas niyan
-                            para bumulusok ulit PATAAS. 🚀
+                            <div class="main-desc">Galing sa taas (Pole), tapos nagpahinga nang slight pababa (Flag).
+                            </div>
+
+                            <div class="insight-box expectation">
+                                <span class="icon">🔮</span>
+                                <div><strong>Expectation:</strong> Kung akala mo babagsak, joke lang! Iipunin lang lakas
+                                    niyan para bumulusok ulit PATAAS. 🚀</div>
+                            </div>
+
+                            <div class="insight-box tip">
+                                <span class="icon">💡</span>
+                                <div><strong>Important:</strong> Ang "Pole" ay yung initial strong move. Pag
+                                    nag-breakout sa flag, tuloy ang ligaya!</div>
+                            </div>
                         </div>
                     </div>
 
@@ -643,9 +719,19 @@
                         </div>
                         <div class="term-title">Bear Flag 🏳️</div>
                         <div class="term-desc">
-                            Galing sa bagsak (Pole), tapos umakyat nang konti (Flag). <br>
-                            <strong>Expectation:</strong> "Scam Pump" tawag jan. Akala mo reversal, yun pala nag-iipon
-                            lang ng bwelo para ituloy ang PAGBAGSAK. 📉
+                            <div class="main-desc">Galing sa bagsak (Pole), tapos umakyat nang konti (Flag).</div>
+
+                            <div class="insight-box expectation">
+                                <span class="icon">🔮</span>
+                                <div><strong>Expectation:</strong> "Scam Pump" tawag jan. Nag-iipon lang ng bwelo para
+                                    ituloy ang PAGBAGSAK. 📉</div>
+                            </div>
+
+                            <div class="insight-box tip">
+                                <span class="icon">💡</span>
+                                <div><strong>Important:</strong> Wag magpapauto sa maliit na akyat. Pag nag-break sa
+                                    baba, Sell agad!</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -727,9 +813,19 @@
                         </div>
                         <div class="term-title">Rising Wedge 📉</div>
                         <div class="term-desc">
-                            Price is climbing pero pasikip ng pasikip (Squeezing). <br>
-                            <strong>Vibe:</strong> Parang relationship na pilit. Mukhang okay sa taas, pero bibigay din
-                            yan pababa. <strong>Bearish Reversal!</strong>
+                            <div class="main-desc">Price is climbing pero pasikip ng pasikip (Squeezing).</div>
+
+                            <div class="insight-box expectation">
+                                <span class="icon">🔮</span>
+                                <div><strong>Expectation:</strong> Akala mo strong uptrend, pero hihingalin 'yan.
+                                    Bibigay din pababa! (Bearish Reversal).</div>
+                            </div>
+
+                            <div class="insight-box tip">
+                                <span class="icon">💡</span>
+                                <div><strong>Important:</strong> Pag nag-break sa support line (baba), dyan ka titira ng
+                                    SELL.</div>
+                            </div>
                         </div>
                     </div>
 
@@ -792,15 +888,25 @@
                                     </g>
                                     <g class="anim-candle" style="animation-delay:2.3s">
                                         <rect x="112" y="5" width="4" height="15" class="candle-body bullish-fill" />
-                                    </g>
                                 </svg>
                             </div>
                         </div>
                         <div class="term-title">Cup & Handle ☕</div>
                         <div class="term-desc">
-                            Hugis tasa. Malalim na bagsak, recovery (Cup), tapos maliit na pahinga (Handle). <br>
-                            <strong>Vibe:</strong> Relax muna, higop kape. Pagkatapos niyan, lipad na 'to!
-                            <strong>Bullish Continuation.</strong>
+                            <div class="main-desc">Hugis tasa ng kape ☕. Malalim na bagsak, recovery (Cup), tapos maliit
+                                na pahinga (Handle).</div>
+
+                            <div class="insight-box expectation">
+                                <span class="icon">🔮</span>
+                                <div><strong>Expectation:</strong> Relax muna, higop kape. Pagkatapos ng handle, lilipad
+                                    na 'to PATAAS! (Bullish Continuation).</div>
+                            </div>
+
+                            <div class="insight-box tip">
+                                <span class="icon">💡</span>
+                                <div><strong>Important:</strong> Yung "Handle" ay ang huling chance para sumabay bago
+                                    lumipad.</div>
+                            </div>
                         </div>
                     </div>
 
@@ -860,9 +966,18 @@
                         </div>
                         <div class="term-title">Falling Wedge 📈</div>
                         <div class="term-desc">
-                            Price is falling pero pasikip ng pasikip (Coiling). <br>
-                            <strong>Vibe:</strong> Nauubusan na ng lakas ang mga sellers. Ready na sumabog PATAAS.
-                            <strong>Bullish Reversal!</strong>
+                            <div class="main-desc">Price is falling pero pasikip ng pasikip (Coiling).</div>
+
+                            <div class="insight-box expectation">
+                                <span class="icon">🔮</span>
+                                <div><strong>Expectation:</strong> Nauubusan na ng lakas ang mga sellers. Ready na
+                                    sumabog PATAAS! (Bullish Reversal).</div>
+                            </div>
+                            <div class="insight-box tip">
+                                <span class="icon">💡</span>
+                                <div><strong>Important:</strong> Kabaliktaran ng Rising Wedge. Bullish naman 'to. Wait
+                                    for breakout sa taas!</div>
+                            </div>
                         </div>
                     </div>
 
@@ -922,9 +1037,20 @@
                         </div>
                         <div class="term-title">Symmetrical Triangle ⚠️</div>
                         <div class="term-desc">
-                            Pressured from both sides. Buyers driving up, Sellers driving down. <br>
-                            <strong>Vibe:</strong> "The Calm Before the Storm". Wait for the break (up or down) bago
-                            sumabay!
+                            <div class="main-desc">Pressured from both sides. Buyers driving up, Sellers driving down.
+                                Ipitan na!</div>
+
+                            <div class="insight-box expectation">
+                                <span class="icon">🔮</span>
+                                <div><strong>Expectation:</strong> "The Calm Before the Storm". Puputok 'yan sa kahit
+                                    saang direksyon!</div>
+                            </div>
+
+                            <div class="insight-box tip">
+                                <span class="icon">💡</span>
+                                <div><strong>Important:</strong> Walang bias 'to. Kung saan nag-break (Taas o Baba),
+                                    doon tayo sasabay. Wag manghula!</div>
+                            </div>
                         </div>
                     </div>
                 </div>
