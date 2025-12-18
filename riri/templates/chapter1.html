@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 1: The Basics (Taglish Edition)</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('riri.static', filename='style.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700&display=swap" rel="stylesheet">
@@ -484,7 +484,7 @@
     <div class="chapter-container">
         <!-- Header -->
         <header class="nav-header">
-            <a href="{{ url_for('index', _anchor='map') }}" class="home-link">
+            <a href="{{ url_for('riri.index', _anchor='map') }}" class="home-link">
                 <span>←</span> Back to Map
             </a>
             <div style="text-align: right;">
@@ -1048,7 +1048,7 @@
         </div>
 
         <div style="text-align: center; margin-top: 50px; margin-bottom: 80px;">
-            <a href="{{ url_for('chapter2') }}" class="next-chapter-btn">
+            <a href="{{ url_for('riri.chapter2') }}" class="next-chapter-btn">
                 Complete Chapter 1 & Continue to Trends →
             </a>
         </div>
@@ -1168,7 +1168,7 @@
                 localStorage.setItem('forex_progress', 1);
             }
             // Navigate
-            window.location.href = "{{ url_for('index', _anchor='map') }}";
+            window.location.href = "{{ url_for('riri.index', _anchor='map') }}";
         }
 
         function tilt(direction) {

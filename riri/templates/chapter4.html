@@ -375,7 +375,7 @@
     <div class="chapter-container">
         <!-- Navigation -->
         <div class="nav-header">
-            <a href="{{ url_for('index', _anchor='map') }}" class="home-link">
+            <a href="{{ url_for('riri.index', _anchor='map') }}" class="home-link">
                 <span>← Back to Map</span>
             </a>
             <div style="font-weight: bold; opacity: 0.7;">CHAPTER 4</div>
@@ -1118,12 +1118,12 @@
                         localStorage.setItem('forex_progress', 4);
                     }
                     // Redirect to the new Simulator URL (Chapter 5)
-                    window.location.href = "{{ url_for('chapter5') }}";
+                    window.location.href = "{{ url_for('riri.chapter5') }}";
                 };
             }
         });
     </script>
-    <script src="{{ url_for('static', filename='sound_manager.js') }}"></script>
+    <script src="{{ url_for('riri.static', filename='sound_manager.js') }}"></script>
 </body>
 
 </html>

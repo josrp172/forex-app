@@ -535,7 +535,7 @@
 <body>
 
     <header class="header">
-        <a href="{{ url_for('index', _anchor='map') }}" class="home-link"><span>←</span> Back to Map</a>
+        <a href="{{ url_for('riri.index', _anchor='map') }}" class="home-link"><span>←</span> Back to Map</a>
         <div style="font-weight:bold; color:#fff;">LIVE SIMULATOR 🔴</div>
     </header>
 
@@ -1252,7 +1252,7 @@
         setInterval(updateSimulation, CONFIG.interval);
 
     </script>
-    <script src="{{ url_for('static', filename='sound_manager.js') }}"></script>
+    <script src="{{ url_for('riri.static', filename='sound_manager.js') }}"></script>
 </body>
 
 </html>

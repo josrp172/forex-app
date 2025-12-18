@@ -57,7 +57,7 @@
                 if (confirm("Are you sure you want to reset all progress?")) {
                     localStorage.setItem('forex_progress', 0);
                     alert("Progress has been reset to 0!");
-                    window.location.href = "{{ url_for('welcome') }}";
+                    window.location.href = "{{ url_for('riri.welcome') }}";
                 }
             } else {
                 alert("Wrong password!");

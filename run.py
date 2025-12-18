@@ -1,39 +1,16 @@
-from flask import Flask, render_template
+from flask import Flask
+from riri import riri_bp
+from christmas import christmas_bp
 
 app = Flask(__name__)
 
-@app.route('/riri_x7z9q/')
-def welcome():
-    return render_template('welcome.html')
+# Register Blueprints
+app.register_blueprint(riri_bp, url_prefix='/riri_x7z9q')
+app.register_blueprint(christmas_bp, url_prefix='/christmas')
 
-@app.route('/riri_x7z9q/index.html')
-def index():
-    return render_template('index.html')
-
-@app.route('/riri_x7z9q/chapter1.html')
-def chapter1():
-    return render_template('chapter1.html')
-
-@app.route('/riri_x7z9q/chapter2.html')
-def chapter2():
-    return render_template('chapter2.html')
-
-@app.route('/riri_x7z9q/chapter3.html')
-def chapter3():
-    return render_template('chapter3.html')
-
-@app.route('/riri_x7z9q/chapter4.html')
-def chapter4():
-    return render_template('chapter4.html')
-
-@app.route('/riri_x7z9q/chapter5.html')
-def chapter5():
-    return render_template('chapter5.html')
-
-@app.route('/riri_x7z9q/reset.html')
-def reset_view():
-    return render_template('reset.html')
+@app.route('/')
+def home():
+    return "<h1>Dedicated For You App</h1><p>Visit <a href='/riri_x7z9q/'>Riri App</a> or <a href='/christmas/'>Christmas App</a></p>"
 
 if __name__ == '__main__':
-    # host='0.0.0.0' allows access from other devices on the same network
     app.run(debug=True, host='0.0.0.0', port=5000)

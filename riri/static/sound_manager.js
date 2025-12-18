@@ -1,7 +1,7 @@
 class SoundManager {
     constructor() {
         this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-        this.bgm = new Audio('/static/music.mp3'); // Expects a user-provided file
+        this.bgm = new Audio('/riri_x7z9q/static/music.mp3'); // Expects a user-provided file
         this.bgm.loop = true;
         this.bgm.volume = 0.5;
         this.isMuted = false;
