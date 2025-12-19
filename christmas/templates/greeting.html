@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Holiday Magic Show</title>
     <link
-        href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Mountains+of+Christmas:wght@700&family=Pacifico&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Mountains+of+Christmas:wght@700&family=Pacifico&family=Quicksand:wght@400;500;600&display=swap"
         rel="stylesheet">
     <style>
         :root {
@@ -48,26 +48,354 @@
             justify-content: center;
             align-items: center;
             perspective: 1200px;
+            opacity: 0;
+            /* Hidden by default for landscape viewing */
         }
 
         .photo-stage {
             position: relative;
             transform-style: preserve-3d;
             margin-bottom: 80px;
-            /* Increased space for clarity */
+            animation: floatPanel 6s ease-in-out infinite;
+        }
+
+        @keyframes floatPanel {
+
+            0%,
+            100% {
+                transform: translateY(0) rotateX(0deg);
+            }
+
+            50% {
+                transform: translateY(-12px) rotateX(1deg);
+            }
+        }
+
+        .photo-aura {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 320px;
+            height: 320px;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.4) 0%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            filter: blur(30px);
+            z-index: 1;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* ============ GIFT BOX UNBOXING ELEMENTS ============ */
+        .gift-box-wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            z-index: 15;
+        }
+
+        .gift-box-base {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            width: 300px;
+            height: 300px;
+            /* Rich Velvet Red with fabric texture */
+            background:
+                linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                linear-gradient(180deg, #c0392b 0%, #96281b 50%, #7b1e16 100%);
+            border-radius: 8px;
+            z-index: 4;
+            box-shadow:
+                0 25px 60px rgba(0, 0, 0, 0.5),
+                0 10px 30px rgba(0, 0, 0, 0.3),
+                inset 0 2px 0 rgba(255, 255, 255, 0.15),
+                inset 0 -5px 20px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform-style: preserve-3d;
+        }
+
+        /* Box Front Face (visible depth) */
+        .gift-box-base::before {
+            content: '';
+            position: absolute;
+            bottom: -25px;
+            left: 0;
+            width: 100%;
+            height: 25px;
+            background: linear-gradient(180deg, #7b1e16 0%, #5a1510 100%);
+            transform: rotateX(-90deg);
+            transform-origin: top;
+            border-radius: 0 0 6px 6px;
+        }
+
+        /* Golden Ribbon on Base - Vertical */
+        .gift-box-base::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            width: 40px;
+            height: 100%;
+            background:
+                linear-gradient(90deg, #b8860b 0%, #ffd700 25%, #fff8dc 50%, #ffd700 75%, #b8860b 100%);
+            transform: translateX(-50%);
+            box-shadow:
+                inset 0 0 8px rgba(0, 0, 0, 0.2),
+                0 0 15px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Horizontal Ribbon on Base */
+        .gift-ribbon-h {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            background:
+                linear-gradient(180deg, #b8860b 0%, #ffd700 25%, #fff8dc 50%, #ffd700 75%, #b8860b 100%);
+            transform: translateY(-50%);
+            box-shadow:
+                inset 0 0 8px rgba(0, 0, 0, 0.2),
+                0 0 15px rgba(255, 215, 0, 0.3);
+            z-index: 2;
+        }
+
+        .gift-box-lid {
+            position: absolute;
+            top: -60px;
+            left: -15px;
+            width: 310px;
+            height: 60px;
+            /* Matching velvet with highlight */
+            background:
+                linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 40%),
+                linear-gradient(180deg, #e74c3c 0%, #c0392b 40%, #96281b 100%);
+            border-radius: 10px 10px 6px 6px;
+            z-index: 20;
+            box-shadow:
+                0 15px 40px rgba(0, 0, 0, 0.5),
+                0 5px 15px rgba(0, 0, 0, 0.3),
+                inset 0 3px 0 rgba(255, 255, 255, 0.2),
+                inset 0 -2px 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transform-style: preserve-3d;
+        }
+
+        /* Lid Side Face */
+        .gift-box-lid::before {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 0;
+            width: 100%;
+            height: 15px;
+            background: linear-gradient(180deg, #96281b 0%, #7b1e16 100%);
+            transform: rotateX(-90deg);
+            transform-origin: top;
+            border-radius: 0 0 4px 4px;
+        }
+
+        /* Ribbon Cross on Lid */
+        .gift-lid-ribbon-v {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            width: 40px;
+            height: 100%;
+            background:
+                linear-gradient(90deg, #b8860b 0%, #ffd700 25%, #fff8dc 50%, #ffd700 75%, #b8860b 100%);
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+
+        .gift-lid-ribbon-h {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background:
+                linear-gradient(180deg, #b8860b 0%, #ffd700 25%, #fff8dc 50%, #ffd700 75%, #b8860b 100%);
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+        /* Luxurious 3D Bow */
+        .gift-bow-container {
+            position: absolute;
+            top: -45px;
+            left: 50%;
+            transform: translateX(-50%) translateZ(30px);
+            z-index: 30;
+            filter: drop-shadow(0 8px 15px rgba(0, 0, 0, 0.4));
+        }
+
+        .gift-bow-loop {
+            position: absolute;
+            width: 50px;
+            height: 35px;
+            background: linear-gradient(135deg, #ffd700 0%, #fff8dc 40%, #ffd700 60%, #b8860b 100%);
+            border-radius: 50% 50% 45% 45%;
+            box-shadow:
+                inset 0 -5px 10px rgba(0, 0, 0, 0.2),
+                inset 0 5px 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .gift-bow-loop.left {
+            left: -40px;
+            top: 10px;
+            transform: rotate(-25deg);
+        }
+
+        .gift-bow-loop.right {
+            right: -40px;
+            top: 10px;
+            transform: rotate(25deg);
+        }
+
+        .gift-bow-center {
+            position: relative;
+            width: 30px;
+            height: 25px;
+            background: radial-gradient(ellipse at 30% 30%, #fff8dc, #ffd700 40%, #b8860b 100%);
+            border-radius: 30%;
+            box-shadow:
+                0 3px 8px rgba(0, 0, 0, 0.3),
+                inset 0 2px 4px rgba(255, 255, 255, 0.4);
+            z-index: 5;
+        }
+
+        .gift-bow-tail {
+            position: absolute;
+            width: 18px;
+            height: 55px;
+            background: linear-gradient(180deg, #ffd700 0%, #b8860b 50%, #8b6914 100%);
+            border-radius: 0 0 8px 8px;
+            top: 15px;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .gift-bow-tail.left {
+            left: -12px;
+            transform: rotate(15deg);
+        }
+
+        .gift-bow-tail.right {
+            right: -12px;
+            transform: rotate(-15deg);
+        }
+
+        /* Shimmer Animation for Ribbons */
+        @keyframes ribbonShimmer {
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .gift-box-base::after,
+        .gift-ribbon-h,
+        .gift-lid-ribbon-v,
+        .gift-lid-ribbon-h {
+            background-size: 200% 100%;
+            animation: ribbonShimmer 3s ease-in-out infinite;
+        }
+
+        /* Inner Glow when opening */
+        .gift-inner-glow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(255, 215, 0, 0.8) 0%, rgba(255, 255, 255, 0.4) 30%, transparent 70%);
+            border-radius: 8px;
+            opacity: 0;
+            z-index: 3;
+            pointer-events: none;
         }
 
         .photo-container {
             width: 280px;
             height: 280px;
-            border: 8px solid rgba(255, 255, 255, 0.8);
-            border-radius: 18px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.2);
-            overflow: hidden;
-            background: rgba(17, 17, 17, 0.6);
+            border: none;
+            border-radius: 12px;
+            box-shadow:
+                0 25px 60px rgba(0, 0, 0, 0.6),
+                0 0 40px rgba(255, 215, 0, 0.15),
+                inset 0 0 60px rgba(255, 255, 255, 0.1);
+            overflow: visible;
+            background: linear-gradient(145deg, rgba(139, 90, 43, 0.9), rgba(101, 67, 33, 0.95));
             position: relative;
             z-index: 5;
-            backdrop-filter: blur(8px);
+            padding: 12px;
+            transform-style: preserve-3d;
+        }
+
+        /* 3D Carved Wood Frame Effect */
+        .photo-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 12px;
+            background: linear-gradient(145deg,
+                    rgba(205, 133, 63, 0.4) 0%,
+                    rgba(139, 90, 43, 0.2) 50%,
+                    rgba(101, 67, 33, 0.6) 100%);
+            border: 3px solid rgba(255, 215, 0, 0.4);
+            box-shadow:
+                inset 2px 2px 4px rgba(255, 255, 255, 0.2),
+                inset -2px -2px 4px rgba(0, 0, 0, 0.3);
+            pointer-events: none;
+        }
+
+        /* Gold Leaf Inner Border */
+        .photo-container::after {
+            content: '';
+            position: absolute;
+            inset: 8px;
+            border: 2px solid rgba(255, 215, 0, 0.6);
+            border-radius: 8px;
+            box-shadow:
+                0 0 10px rgba(255, 215, 0, 0.3),
+                inset 0 0 10px rgba(255, 215, 0, 0.2);
+            pointer-events: none;
+        }
+
+        /* Snow Accumulation on Frame Top */
+        .frame-snow {
+            position: absolute;
+            top: -8px;
+            left: 10%;
+            width: 80%;
+            height: 16px;
+            background: radial-gradient(ellipse at center bottom,
+                    rgba(255, 255, 255, 0.95) 0%,
+                    rgba(240, 248, 255, 0.8) 40%,
+                    transparent 70%);
+            border-radius: 50% 50% 0 0;
+            filter: blur(1px);
+            z-index: 10;
+        }
+
+        .photo-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+            background: rgba(0, 0, 0, 0.3);
         }
 
         .photo-img {
@@ -75,9 +403,7 @@
             height: 100%;
             object-fit: cover;
             filter: blur(45px) contrast(1.1) brightness(1.2);
-            /* Heavy blur as requested */
             transform: scale(1.1);
-            /* Prevent edge bleeding from blur */
         }
 
         .photo-glint {
@@ -88,6 +414,7 @@
             height: 100%;
             background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.6), transparent);
             transform: skewX(-25deg);
+            z-index: 5;
         }
 
         .deco {
@@ -99,38 +426,159 @@
             transform: scale(0);
         }
 
+        /* ============ GLASS-MORPHISM MESSAGE PANEL ============ */
         .text-wrap {
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(12px);
-            color: var(--red);
-            padding: 40px 60px;
-            /* More breathing room */
-            border-radius: 30px;
-            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.5);
+            /* Frosted Glass Effect */
+            background: linear-gradient(135deg,
+                    rgba(255, 255, 255, 0.15) 0%,
+                    rgba(255, 255, 255, 0.08) 50%,
+                    rgba(200, 220, 255, 0.12) 100%);
+            backdrop-filter: blur(20px) saturate(1.2);
+            -webkit-backdrop-filter: blur(20px) saturate(1.2);
+
+            color: var(--white);
+            padding: 45px 65px;
+            border-radius: 24px;
+
+            /* Ice Edge Effect - subtle inner glow */
+            border: 0.5px solid rgba(255, 255, 255, 0.4);
+            box-shadow:
+                0 30px 80px rgba(0, 0, 0, 0.5),
+                0 0 1px rgba(255, 255, 255, 0.8),
+                inset 0 0 30px rgba(255, 255, 255, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+
             text-align: center;
             max-width: 85%;
-            min-width: 400px;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            border-bottom: 8px solid rgba(214, 48, 49, 0.8);
+            min-width: 420px;
             opacity: 0;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 18px;
+            position: relative;
+            overflow: hidden;
+            animation: floatPanel 6s ease-in-out infinite;
+            animation-delay: 0.5s;
+        }
+
+        /* Shimmer overlay for magical effect */
+        .text-wrap::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.15),
+                    transparent);
+            animation: panelShimmer 8s ease-in-out infinite;
+        }
+
+        @keyframes panelShimmer {
+
+            0%,
+            100% {
+                left: -100%;
+            }
+
+            50% {
+                left: 150%;
+            }
         }
 
         .main-msg {
             font-family: 'Mountains of Christmas', cursive;
-            font-size: 2.2rem;
+            font-size: 2.4rem;
             display: inline-block;
-            min-height: 2.5rem;
+            min-height: 2.8rem;
+            color: #fff;
+            text-shadow:
+                0 2px 10px rgba(0, 0, 0, 0.4),
+                0 0 30px rgba(255, 215, 0, 0.3);
+            letter-spacing: 1px;
         }
 
         .sub-msg {
-            font-size: 1.1rem;
-            color: #444;
-            font-weight: 400;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.15rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
             display: inline-block;
-            min-height: 1.5rem;
+            min-height: 1.6rem;
+            line-height: 1.7;
+            text-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Sparkle particle container for typewriter effect */
+        #sparkle-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .sparkle-particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle, #ffd700 0%, #ffaa00 50%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: sparkleFloat 1.2s ease-out forwards;
+        }
+
+        @keyframes sparkleFloat {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(var(--dx), var(--dy)) scale(0);
+            }
+        }
+
+        /* ============ FINALE TRANSITION EFFECTS ============ */
+        .finale-magic {
+            position: absolute;
+            pointer-events: none;
+            z-index: 2005;
+        }
+
+        .particle-firework {
+            width: 10px;
+            height: 10px;
+            background: radial-gradient(circle, #fff 0%, #ffd700 40%, #ff8800 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 15px #ffd700, 0 0 30px #ffaa00;
+        }
+
+        .particle-snow-burst {
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            filter: blur(1px);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        #finale-flash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 3000;
+            pointer-events: none;
+            opacity: 0;
         }
 
 
@@ -432,16 +880,20 @@
 
         .scene-indicator {
             position: fixed;
-            bottom: 20px;
-            left: 20px;
+            bottom: 35px;
+            right: 45px;
             z-index: 50;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-size: 0.9rem;
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: transparent;
+            padding: 0;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.6);
+            border: none;
+            box-shadow: none;
             display: none;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
         }
 
         /* Storybook Transition */
@@ -850,17 +1302,43 @@
 </head>
 
 <body>
+    <div id="finale-flash"></div>
+    <div id="finale-magic-container"
+        style="position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:2004;"></div>
     <div id="canvas-container"></div>
     <div id="ui-layer">
         <div class="photo-stage" id="photo-stage">
+            <div class="photo-aura" id="photo-aura"></div>
+            <!-- Enhanced 3D Gift Box for Realistic Unboxing -->
+            <div id="gift-base" class="gift-box-base">
+                <div class="gift-ribbon-h"></div>
+                <div class="gift-inner-glow" id="gift-glow"></div>
+            </div>
+            <div id="gift-lid" class="gift-box-lid">
+                <div class="gift-lid-ribbon-v"></div>
+                <div class="gift-lid-ribbon-h"></div>
+                <!-- 3D Bow -->
+                <div class="gift-bow-container" id="gift-bow">
+                    <div class="gift-bow-loop left"></div>
+                    <div class="gift-bow-loop right"></div>
+                    <div class="gift-bow-tail left"></div>
+                    <div class="gift-bow-tail right"></div>
+                    <div class="gift-bow-center"></div>
+                </div>
+            </div>
             <div class="deco" id="deco-1" style="top: -50px; left: -50px;">🎁</div>
             <div class="deco" id="deco-2" style="top: -50px; right: -50px;">🎀</div>
             <div class="deco" id="deco-3" style="bottom: -60px; left: 50%; transform: translateX(-50%);">✨</div>
             <div class="photo-container" id="photo-box">
-                <div class="photo-glint" id="photo-glint"></div>
-                <img src="{{ url_for('christmas.static', filename='avatar_true.jpg') }}" class="photo-img">
+                <div class="frame-snow"></div>
+                <div class="photo-inner">
+                    <div class="photo-glint" id="photo-glint"></div>
+                    <img src="{{ url_for('christmas.static', filename='avatar_true.jpg') }}" class="photo-img"
+                        id="photo-img">
+                </div>
             </div>
         </div>
+        <div id="sparkle-container"></div>
         <div class="text-wrap" id="text-node">
             <div class="main-msg" id="msg-title"></div>
             <div class="sub-msg" id="msg-sub"></div>
@@ -897,13 +1375,9 @@
         </div>
         <div class="hint-text">✨ A short cinematic experience awaits ✨</div>
     </div>
-    <div class="countdown-box" id="countdown-box">⏱️ Showing for: <span id="countdown-timer">1:40</span></div>
-    <div class="scene-indicator" id="scene-indicator">Scene <span id="current-scene">1</span> / <span
+    <div class="countdown-box" id="countdown-box">✨ <span id="countdown-timer">1:40</span></div>
+    <div class="scene-indicator" id="scene-indicator">Page <span id="current-scene">1</span> / <span
             id="total-scenes">5</span></div>
-    <div class="hud">
-        <button class="hud-btn" id="btn-pause">⏸</button>
-        <button class="hud-btn" id="btn-mute">🔊</button>
-    </div>
     <div class="timer-line" id="timer"></div>
     <div id="book-overlay">
         <!-- Book Spine -->
@@ -995,7 +1469,7 @@
                     sub: "We've been through so much together... the laughter, the struggles, the little moments that meant everything.",
                     decos: ["⭐", "🌙", "💫"],
                     charPose: "lookup",
-                    camTarget: { x: -4, y: 6, z: 20 }
+                    camTarget: { x: -3, y: 3, z: 20 }
                 },
                 // Scene 3: THE GIFT - Climax of Joy
                 {
@@ -1029,15 +1503,115 @@
             const TOTAL_TIME = script.length * DURATION;
             let timeRemaining = TOTAL_TIME, countdownInterval = null;
             let appState = { idx: -1, isPlaying: false };
-            let scene, camera, renderer, elf, christmasTree, snowman, presents = [], props = {}, clock;
+            // Declare as window properties to ensure global accessibility and fix ReferenceError
+            window.scene = null; window.camera = null; window.renderer = null;
+            let elf, christmasTree, snowman, presents = [], props = {}, clock;
             let trees = [];
+
+            function startChapterTimer() {
+                if (countdownInterval) clearInterval(countdownInterval);
+                countdownInterval = setInterval(updateCountdown, 1000);
+
+                gsap.killTweensOf('#timer');
+                gsap.fromTo('#timer', { width: "0%" }, { width: "100%", duration: DURATION, ease: "linear" });
+
+                // Clear any existing delayed calls for nextScene
+                gsap.killTweensOf(nextScene);
+                gsap.delayedCall(DURATION, nextScene);
+            }
+
+            // Old Book Dust Emitter
+            function emitBookDust() {
+                const container = document.getElementById('finale-magic-container'); // Reuse container
+                if (!container) return;
+                const centerX = window.innerWidth / 2;
+                const centerY = window.innerHeight / 2;
+
+                // Increase count for more visible dust
+                for (let i = 0; i < 150; i++) {
+                    const dust = document.createElement('div');
+                    const size = Math.random() * 6 + 2; // Varying sizes 2px to 8px
+
+                    dust.style.position = 'absolute';
+                    dust.style.width = size + 'px';
+                    dust.style.height = size + 'px';
+
+                    // Mix of colors for texture: tan, white-ish, and dark dust
+                    const colorVars = ['#d2b48c', '#f5deb3', '#a0522d', '#ffffff'];
+                    dust.style.background = colorVars[Math.floor(Math.random() * colorVars.length)];
+
+                    dust.style.borderRadius = '50%';
+                    // Higher start opacity
+                    dust.style.opacity = Math.random() * 0.6 + 0.4;
+                    // Stronger glow
+                    dust.style.boxShadow = '0 0 8px rgba(210, 180, 140, 0.6)';
+
+                    container.appendChild(dust);
+
+                    // Scatter dynamics
+                    const angle = Math.random() * Math.PI * 2;
+                    const force = Math.random() * 800 + 100; // Wider spread
+
+                    gsap.set(dust, { x: centerX, y: centerY, scale: 0, rotation: Math.random() * 360 });
+
+                    gsap.to(dust, {
+                        x: centerX + Math.cos(angle) * force,
+                        y: centerY + Math.sin(angle) * force * 0.6, // Elliptical spread
+                        rotation: Math.random() * 360,
+                        scale: Math.random() * 1.5 + 0.5,
+                        opacity: 0,
+                        duration: 2 + Math.random() * 2, // Slower fade
+                        ease: "power2.out",
+                        onComplete: () => dust.remove()
+                    });
+                }
+            }
+
+            // Sparkle particle emitter for typewriter effect
+            function emitSparkles(x, y, count = 3) {
+                const container = document.getElementById('sparkle-container');
+                if (!container) return;
+
+                for (let i = 0; i < count; i++) {
+                    const sparkle = document.createElement('div');
+                    sparkle.className = 'sparkle-particle';
+
+                    // Random direction
+                    const dx = (Math.random() - 0.5) * 40;
+                    const dy = -20 - Math.random() * 30;
+
+                    sparkle.style.left = x + 'px';
+                    sparkle.style.top = y + 'px';
+                    sparkle.style.setProperty('--dx', dx + 'px');
+                    sparkle.style.setProperty('--dy', dy + 'px');
+                    sparkle.style.animationDelay = (i * 0.1) + 's';
+
+                    container.appendChild(sparkle);
+
+                    // Auto remove after animation
+                    setTimeout(() => sparkle.remove(), 1500);
+                }
+            }
 
             function typeWriter(element, text, speed, callback) {
                 element.innerHTML = '';
                 let i = 0;
+
                 function type() {
                     if (i < text.length) {
-                        element.innerHTML += text.charAt(i);
+                        const char = text.charAt(i);
+                        element.innerHTML += char;
+
+                        // Emit sparkles for non-space characters (every 2nd char to reduce particles)
+                        if (char !== ' ' && i % 2 === 0) {
+                            const rect = element.getBoundingClientRect();
+                            // Approximate position of the last character
+                            const charWidth = rect.width / Math.max(1, element.textContent.length);
+                            const x = rect.left + (i * charWidth * 0.8);
+                            const y = rect.top + rect.height / 2;
+                            emitSparkles(x, y, 2);
+                        }
+
                         i++;
                         setTimeout(type, speed);
                     } else if (callback) {
@@ -1062,7 +1636,10 @@
                 scene.fog = new THREE.FogExp2(0x1a472a, 0.025);
 
                 camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
-                camera.position.set(0, 5, 22);
+                window.cameraGroup = new THREE.Group();
+                cameraGroup.add(camera);
+                cameraGroup.position.set(0, 5, 22);
+                scene.add(cameraGroup);
 
                 renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
                 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -2456,6 +3033,7 @@
                     elf.userData.isPosing = true;
                     elf.rotation.y %= (Math.PI * 2);
                     // Scene 2: Gazing at the stars
+                    gsap.to(elf.position, { x: -2, y: -3, z: 8, duration: 1.5, ease: "power2.out", overwrite: true });
                     gsap.to(elf.rotation, { y: 0, duration: 1.0, ease: "power2.out", overwrite: true });
                     gsap.to(elf.headJoint.rotation, { x: -0.5, duration: 1.5, repeat: -1, yoyo: true, ease: "sine.inOut" });
                     gsap.to([elf.armL.rotation, elf.armR.rotation], { z: 1.0, x: 0, duration: 0.8, ease: "power2.out", overwrite: true });
@@ -2617,8 +3195,19 @@
                     tl.to(bL, { rotateY: -110, x: "-100%", duration: 1.5, ease: "power3.inOut", delay: 0.5 })
                         .to(bR, { rotateY: 110, x: "100%", duration: 1.5, ease: "power3.inOut" }, "-=1.5")
                         .to(['#book-spine', '#book-clasp', '#book-ribbon', '#book-spine-glow'], { opacity: 0, duration: 0.8, ease: "power2.inOut" }, "-=1.5") // Fade spine out as pages open
-                        .add(() => { startSceneAnimations(data); }, "-=1.0") // Start anims as it opens
-                        .set(overlay, { visibility: 'hidden' });
+                        .set(overlay, { visibility: 'hidden' })
+                        .add(() => {
+                            // 5 SECONDS VIEWING DELAY BEFORE UI & TEXT
+                            gsap.delayedCall(5, () => {
+                                // Show UI (indicator and countdown)
+                                document.getElementById('scene-indicator').style.display = 'block';
+                                document.getElementById('countdown-box').style.display = 'flex';
+                                gsap.fromTo(['.countdown-box', '.scene-indicator', '.timer-line', '#ui-layer'], { opacity: 0 }, { opacity: 1, duration: 1.5 });
+
+                                // Start animations (Timer will be triggered inside unboxing)
+                                startSceneAnimations(data);
+                            });
+                        });
                 } else {
                     // NORMAL TRANSITION: Close then Open
                     tl.set(['#book-text-l', '#book-text-r'], { opacity: 1 }) // Show greeting text during transition
@@ -2637,8 +3226,70 @@
                         .set(overlay, { visibility: 'hidden' });
                 }
 
-                gsap.fromTo('#timer', { width: "0%" }, { width: "100%", duration: DURATION, ease: "linear" });
-                gsap.delayedCall(DURATION, nextScene);
+                // Removed immediate timer start: will be triggered by startSceneAnimations -> unboxTl
+            }
+
+            function emitFinaleMagic() {
+                const container = document.getElementById('finale-magic-container');
+                if (!container) return;
+
+                const centerX = window.innerWidth / 2;
+                const centerY = window.innerHeight / 2;
+
+                // 1. Christmas Snow Burst
+                for (let i = 0; i < 60; i++) {
+                    const snow = document.createElement('div');
+                    snow.className = 'finale-magic particle-snow-burst';
+                    container.appendChild(snow);
+
+                    const angle = Math.random() * Math.PI * 2;
+                    const dist = 50 + Math.random() * 200;
+                    const tx = Math.cos(angle) * dist;
+                    const ty = Math.sin(angle) * dist - 100;
+
+                    gsap.set(snow, { x: centerX, y: centerY, scale: 0 });
+                    gsap.to(snow, {
+                        x: centerX + tx,
+                        y: centerY + ty,
+                        scale: Math.random() * 1.5 + 0.5,
+                        opacity: 1,
+                        duration: 1 + Math.random() * 2,
+                        ease: "power2.out",
+                        onComplete: () => {
+                            gsap.to(snow, { y: "-=200", opacity: 0, duration: 2, delay: 0.5, onComplete: () => snow.remove() });
+                        }
+                    });
+                }
+
+                // 2. New Year Firework Burst
+                setTimeout(() => {
+                    for (let i = 0; i < 100; i++) {
+                        const star = document.createElement('div');
+                        star.className = 'finale-magic particle-firework';
+                        container.appendChild(star);
+
+                        const angle = Math.random() * Math.PI * 2;
+                        const velocity = 5 + Math.random() * 15;
+                        const tx = Math.cos(angle) * velocity * 40;
+                        const ty = Math.sin(angle) * velocity * 40;
+
+                        gsap.set(star, { x: centerX, y: centerY, scale: 0 });
+                        gsap.to(star, {
+                            x: centerX + tx,
+                            y: centerY + ty,
+                            scale: Math.random() * 0.8 + 0.2,
+                            duration: 2 + Math.random() * 1.5,
+                            ease: "expo.out",
+                            onComplete: () => star.remove()
+                        });
+                        gsap.to(star, {
+                            opacity: 0,
+                            duration: 1.5,
+                            delay: 1 + Math.random(),
+                            ease: "power2.in"
+                        });
+                    }
+                }, 500);
             }
 
             function showFinale() {
@@ -2650,23 +3301,33 @@
                 const finale = document.getElementById('finale-msg');
                 const tlTextL = document.getElementById('book-text-l');
                 const tlTextR = document.getElementById('book-text-r');
+                const flash = document.getElementById('finale-flash');
 
                 // Clear UI and 3D Scene
                 gsap.to(['#ui-layer', '.countdown-box', '.scene-indicator', '.hud', '.timer-line', '#canvas-container'], { opacity: 0, duration: 1.5, ease: "power2.inOut" });
 
-                // Final Book Closing
-                gsap.timeline()
-                    .set(overlay, { visibility: 'visible' })
+                // Final Book Closing Sequence
+                const masterTl = gsap.timeline();
+
+                masterTl.set(overlay, { visibility: 'visible' })
                     .add(() => {
-                        // Change cover text for finale
                         tlTextL.innerText = "The End";
                         tlTextR.innerText = "of the Story";
                     })
-                    .fromTo(bL, { x: "-100%", rotateY: -90 }, { x: "0%", rotateY: 0, duration: 2, ease: "power3.inOut" })
-                    .fromTo(bR, { x: "100%", rotateY: 90 }, { x: "0%", rotateY: 0, duration: 2, ease: "power3.inOut" }, 0)
-                    .to(['#book-spine', '#book-clasp', '#book-ribbon', '#book-spine-glow'], { opacity: 1, duration: 1.5, ease: "power2.inOut" }, 0) // Fade spine in for finale
-                    .to(finale, { opacity: 1, duration: 1.5, ease: "power2.inOut" }, "-=0.5")
-                    .to([tlTextL, tlTextR], { opacity: 0, duration: 1 }, "-=1");
+                    // Close the pages
+                    .fromTo(bL, { x: "-100%", rotateY: -90 }, { x: "0%", rotateY: 0, duration: 2.2, ease: "power4.inOut" })
+                    .fromTo(bR, { x: "100%", rotateY: 90 }, { x: "0%", rotateY: 0, duration: 2.2, ease: "power4.inOut" }, 0)
+                    .to(['#book-spine', '#book-clasp', '#book-ribbon', '#book-spine-glow'], { opacity: 1, duration: 1.5 }, 0.5)
+
+                    // The MAGIC MOMENT - exactly as the book snaps shut
+                    .add(() => {
+                        // Impact Flash
+                        gsap.to(flash, { opacity: 0.8, duration: 0.1, yoyo: true, repeat: 1 });
+                        emitFinaleMagic();
+                    }, 1.8)
+
+                    .to(finale, { opacity: 1, y: -20, duration: 2, ease: "back.out(1.7)" }, 2.0)
+                    .to([tlTextL, tlTextR], { opacity: 0, duration: 1 }, 1.5);
             }
 
             function prepareSceneEnvironment(data) {
@@ -2674,7 +3335,7 @@
                 if (scene.fog) scene.fog.color.set(data.bg);
                 props.stars.visible = (data.bg === "#0c1445");
                 props.aurora.visible = (data.bg === "#0c1445");
-                gsap.to(camera.position, { x: data.camTarget.x, y: data.camTarget.y, z: data.camTarget.z, duration: 3.5, ease: "power2.inOut" });
+                gsap.to(cameraGroup.position, { x: data.camTarget.x, y: data.camTarget.y, z: data.camTarget.z, duration: 3.5, ease: "power2.inOut" });
 
                 // Reset character visibility
                 if (props.puppy) props.puppy.visible = false;
@@ -2737,41 +3398,193 @@
                 const photoBox = document.getElementById('photo-box');
                 const glint = document.getElementById('photo-glint');
 
-                // TEXT ANIMATION - with emotional variation
+                // TEXT ANIMATION - Delay until unboxed
                 titleEl.innerHTML = '';
                 subEl.innerHTML = '';
                 gsap.killTweensOf(textWrap);
                 gsap.set(textWrap, { opacity: 0, y: 30, scale: 0.95 });
 
-                // Scene-specific entrance animations
-                if (sceneIdx === 2) {
-                    // CLIMAX - Dramatic heartbeat entrance
-                    gsap.to(textWrap, { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: "power4.out" });
-                    gsap.to(textWrap, { scale: 1.02, duration: 0.5, yoyo: true, repeat: -1, ease: "sine.inOut", delay: 1 }); // Heartbeat
-                } else if (sceneIdx === 4) {
-                    // ENDING - Grand, hopeful entrance
-                    gsap.to(textWrap, { opacity: 1, y: 0, scale: 1, duration: 1.8, ease: "elastic.out(1, 0.5)" });
+                const revealText = () => {
+                    if (sceneIdx === 2) {
+                        gsap.to(textWrap, { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: "power4.out" });
+                        gsap.to(textWrap, { scale: 1.02, duration: 0.5, yoyo: true, repeat: -1, ease: "sine.inOut", delay: 1 });
+                    } else if (sceneIdx === 4) {
+                        gsap.to(textWrap, { opacity: 1, y: 0, scale: 1, duration: 1.8, ease: "elastic.out(1, 0.5)" });
+                    } else {
+                        gsap.to(textWrap, { opacity: 1, y: 0, scale: 1, duration: 1.2, ease: "back.out(1.2)" });
+                    }
+
+                    const typingSpeed = sceneIdx === 2 ? 80 : (sceneIdx === 4 ? 50 : 60);
+                    typeWriter(titleEl, data.title, typingSpeed, () => {
+                        setTimeout(() => { typeWriter(subEl, data.sub, sceneIdx === 2 ? 50 : 40); }, sceneIdx === 2 ? 600 : 400);
+                    });
+                    gsap.to(textWrap, { y: "-=5", duration: 3, yoyo: true, repeat: -1, ease: "sine.inOut", delay: 1.5 });
+                };
+
+                // PHOTO REVEAL ANIMATION
+                const photoImg = document.getElementById('photo-img');
+                const photoAura = document.getElementById('photo-aura');
+                const photoCont = document.getElementById('photo-box');
+                const giftLid = document.getElementById('gift-lid');
+                const giftBase = document.getElementById('gift-base');
+
+                gsap.killTweensOf([photoBox, glint, photoImg, photoAura, giftLid, giftBase]);
+
+                if (sceneIdx === 0) {
+                    // --- 1. RESET BOX STATE ---
+                    const giftGlow = document.getElementById('gift-glow');
+                    const giftBow = document.getElementById('gift-bow');
+
+                    gsap.set(giftBase, { opacity: 1, scale: 1, z: 0, y: 0, rotationX: 0, rotationY: 0 });
+                    gsap.set(giftLid, { opacity: 1, scale: 1, z: 0, y: 0, rotationX: 0, rotationY: 0, rotationZ: 0 });
+                    gsap.set(giftGlow, { opacity: 0 });
+                    gsap.set(photoBox, {
+                        opacity: 0,
+                        scale: 0.5,
+                        z: -50,
+                        y: 80,
+                        rotationY: 0,
+                        rotationX: 0
+                    });
+                    gsap.set(photoImg, { filter: "blur(30px) brightness(2)" });
+                    gsap.set(photoAura, { opacity: 0, scale: 0.3 });
+
+                    // --- 2. DRAMATIC UNBOXING SEQUENCE ---
+                    const unboxTl = gsap.timeline({ delay: 0.3 });
+
+                    // PHASE 1: Anticipation - Box wobbles like something wants to escape
+                    unboxTl.to(giftLid, {
+                        y: -3,
+                        duration: 0.15,
+                        repeat: 5,
+                        yoyo: true,
+                        ease: "power1.inOut"
+                    })
+                        // PHASE 2: Inner glow intensifies
+                        .to(giftGlow, {
+                            opacity: 1,
+                            duration: 0.4,
+                            ease: "power2.in"
+                        }, "-=0.3")
+                        // PHASE 3: Lid pops off dramatically with rotation
+                        .to(giftLid, {
+                            y: -350,
+                            z: 250,
+                            rotationX: -65,
+                            rotationY: 35,
+                            rotationZ: 15,
+                            scale: 0.9,
+                            opacity: 0,
+                            duration: 1.4,
+                            ease: "power4.out",
+                            onStart: () => {
+                                const rect = photoCont.getBoundingClientRect();
+                                // Burst of sparkles when lid pops
+                                emitSparkles(rect.left + rect.width / 2, rect.top - 30, 35);
+                                emitSparkles(rect.left + 20, rect.top, 15);
+                                emitSparkles(rect.left + rect.width - 20, rect.top, 15);
+                            }
+                        })
+                        // PHASE 4: Photo rises majestically from the box
+                        .to(photoBox, {
+                            opacity: 1,
+                            scale: 1.05,
+                            z: 150,
+                            y: -50,
+                            duration: 1.2,
+                            ease: "back.out(1.5)",
+                            onStart: () => {
+                                gsap.delayedCall(0.3, revealText);
+                                startChapterTimer();
+                                // More sparkles as gift emerges
+                                const rect = photoCont.getBoundingClientRect();
+                                emitSparkles(rect.left + rect.width / 2, rect.top + rect.height / 2, 20);
+                            }
+                        }, "-=0.8")
+                        // PHASE 5: Box fades away elegantly
+                        .to(giftBase, {
+                            opacity: 0,
+                            scale: 0.85,
+                            y: 80,
+                            z: -100,
+                            rotationX: 15,
+                            duration: 1.2,
+                            ease: "power3.in"
+                        }, "-=0.9")
+                        // PHASE 6: Photo settles into final position
+                        .to(photoBox, {
+                            scale: 1,
+                            z: 0,
+                            y: 0,
+                            duration: 1.5,
+                            ease: "elastic.out(1, 0.6)"
+                        }, "-=0.4")
+                        // PHASE 7: Image develops/unblurs
+                        .to(photoImg, {
+                            filter: "blur(0px) brightness(1)",
+                            duration: 2.5,
+                            ease: "power2.out"
+                        }, "-=1.8");
+
                 } else {
-                    gsap.to(textWrap, { opacity: 1, y: 0, scale: 1, duration: 1.2, ease: "back.out(1.2)" });
+                    // --- CINEMATIC REVEAL FOR SUBSEQUENT SCENES ---
+                    gsap.set([giftLid, giftBase], { opacity: 0 });
+                    gsap.set(photoBox, {
+                        opacity: 0,
+                        scale: 0.1,
+                        rotationY: -180,
+                        z: -300,
+                        y: 50
+                    });
+                    gsap.set(photoImg, { filter: "blur(40px) brightness(2)" });
+                    gsap.set(photoAura, { opacity: 0, scale: 0.5 });
+
+                    gsap.to(photoBox, {
+                        opacity: 1,
+                        scale: 1,
+                        rotationY: 0,
+                        z: 0,
+                        y: 0,
+                        duration: 1.8,
+                        ease: "expo.out",
+                        onStart: () => {
+                            const rect = photoCont.getBoundingClientRect();
+                            emitSparkles(rect.left + rect.width / 2, rect.top + rect.height / 2, 10);
+                            revealText();
+                            startChapterTimer();
+                        }
+                    });
+
+                    gsap.to(photoImg, {
+                        filter: "blur(0px) brightness(1)",
+                        duration: 2.0,
+                        ease: "power2.inOut"
+                    });
                 }
 
-                // Typing speed varies by emotion
-                const typingSpeed = sceneIdx === 2 ? 80 : (sceneIdx === 4 ? 50 : 60);
-                typeWriter(titleEl, data.title, typingSpeed, () => {
-                    setTimeout(() => { typeWriter(subEl, data.sub, sceneIdx === 2 ? 50 : 40); }, sceneIdx === 2 ? 600 : 400);
+                // Magical Aura Glow (Looping)
+                gsap.to(photoAura, {
+                    opacity: 1,
+                    scale: 1.3,
+                    duration: 2.0,
+                    yoyo: true,
+                    repeat: -1,
+                    ease: "sine.inOut"
                 });
 
-                gsap.to(textWrap, { y: "-=5", duration: 3, yoyo: true, repeat: -1, ease: "sine.inOut", delay: 1.5 });
-
-                // PHOTO ANIMATION
-                gsap.killTweensOf(photoBox);
-                gsap.set(photoBox, { opacity: 0, scale: 0.8, rotation: -10, y: 50 });
-                gsap.to(photoBox, { opacity: 0.9, scale: 1, rotation: 0, y: 0, duration: 1.5, ease: "elastic.out(1, 0.6)" });
-                gsap.to(photoBox, { rotation: 2, duration: 4, yoyo: true, repeat: -1, ease: "sine.inOut", delay: 0.5 });
-                gsap.to(photoBox, { y: -15, duration: 4.5, yoyo: true, repeat: -1, ease: "sine.inOut" });
-
+                // Glint Sweep (Looping)
                 gsap.set(glint, { left: "-100%" });
-                gsap.to(glint, { left: "200%", duration: 1.5, repeat: -1, repeatDelay: 3, ease: "power2.inOut" });
+                gsap.to(glint, {
+                    left: "200%",
+                    duration: 2.0,
+                    delay: 2.5,
+                    repeat: -1,
+                    repeatDelay: 3.0,
+                    ease: "power3.inOut"
+                });
+
+                // Subtle bobbing (separate from entrance)
+                gsap.to(photoBox, { y: -15, duration: 4.5, yoyo: true, repeat: -1, ease: "sine.inOut", delay: 3 });
 
                 // DECOS
                 [1, 2, 3].forEach((n, i) => {
@@ -2836,25 +3649,61 @@
             }
 
             document.getElementById('go-btn').onclick = () => {
+                const btn = document.getElementById('go-btn');
+                btn.style.pointerEvents = 'none'; // Prevent double click
                 document.getElementById('bgm').play().catch(() => { });
-                gsap.to('#start-overlay', {
-                    opacity: 0, duration: 0.7, onComplete: () => {
-                        document.getElementById('start-overlay').style.display = 'none';
-                        document.getElementById('countdown-box').style.display = 'flex';
-                        document.getElementById('scene-indicator').style.display = 'block';
-                        document.getElementById('total-scenes').innerText = script.length;
-                        init3D(); appState.isPlaying = true;
-                        countdownInterval = setInterval(updateCountdown, 1000);
-                        nextScene();
-                    }
-                });
+
+                const tlOpen = gsap.timeline();
+
+                // 1. Strings Snapping (0s - 1.0s)
+                tlOpen.to(['.seal-string-left', '.seal-string-right'], {
+                    scaleX: 0,
+                    duration: 0.4,
+                    ease: "elastic.in(1, 0.5)",
+                    stagger: 0.1
+                })
+                    .to('.seal-curl', { opacity: 0, duration: 0.5, scale: 2 }, "<")
+
+                    // 2. Seal Breaking (0.5s - 1.5s)
+                    .to('.play-btn', {
+                        rotation: 15,
+                        scale: 1.2,
+                        duration: 0.3,
+                        ease: "back.out(3)"
+                    }, "-=0.2") // Tension
+                    .to('.play-btn', {
+                        y: 800,
+                        rotation: 180,
+                        opacity: 0,
+                        duration: 1.0,
+                        ease: "power3.in"
+                    }) // Fall
+
+                    // 3. Dust & Title Fade (1.5s - 3.5s)
+                    .add(() => emitBookDust(), "-=0.5")
+                    .to(['#start-overlay h1', '.cinematic-sub', '.hint-text'], {
+                        opacity: 0,
+                        y: -50,
+                        duration: 2,
+                        ease: "power2.inOut",
+                        stagger: 0.2
+                    }, "-=0.8")
+
+                    // 4. Reveal Book & Start (3.5s - 5.0s)
+                    .to('#start-overlay', {
+                        opacity: 0,
+                        duration: 1.5,
+                        onComplete: () => {
+                            document.getElementById('start-overlay').style.display = 'none';
+                            document.getElementById('total-scenes').innerText = script.length;
+                            init3D();
+                            appState.isPlaying = true;
+                            nextScene();
+                        }
+                    }, "-=1.0");
             };
 
-            document.getElementById('btn-pause').onclick = () => {
-                appState.isPlaying = !appState.isPlaying;
-                document.getElementById('btn-pause').innerText = appState.isPlaying ? "⏸" : "▶";
-                if (appState.isPlaying) { countdownInterval = setInterval(updateCountdown, 1000); nextScene(); } else { clearInterval(countdownInterval); }
-            };
+
 
             // Anticipation / "Thinking" Peek Logic
             function initAnticipation() {
@@ -2885,10 +3734,7 @@
                 gsap.delayedCall(4, peek);
             }
 
-            document.getElementById('btn-mute').onclick = () => {
-                const a = document.getElementById('bgm'); a.muted = !a.muted;
-                document.getElementById('btn-mute').innerText = a.muted ? "🔇" : "🔊";
-            };
+
 
             function animate() {
                 if (appState.isFinale) return; // Stop rendering when book closes for good
@@ -2946,7 +3792,7 @@
 
                 if (props.sleigh) {
                     props.sleigh.position.x += 0.12; // Much faster traveling speed
-                    props.sleigh.position.y = 18 + Math.sin(time * 1.5) * 1.5;
+                    props.sleigh.position.y = 12 + Math.sin(time * 1.5) * 1.5;
                     props.sleigh.rotation.z = Math.sin(time * 1.5) * 0.1;
                     if (props.sleigh.position.x > 45) props.sleigh.position.x = -45; // Wider travel range
                     const spk = new THREE.Mesh(new THREE.OctahedronGeometry(0.12), new THREE.MeshBasicMaterial({ color: 0xffddaa, transparent: true, opacity: 0.8 }));
@@ -3108,7 +3954,31 @@
                     elf.armR.rotation.x = Math.sin(time * 5) * 0.3;
                 }
 
-                camera.position.y += Math.sin(time * 0.4) * 0.003; camera.position.x += Math.cos(time * 0.3) * 0.002;
+                if (window.cameraGroup) {
+                    // Update camera position within its group for interactive drift
+                    camera.position.x = Math.cos(time * 0.3) * 0.002 + (currentMouseX * 0.2);
+                    camera.position.y = Math.sin(time * 0.4) * 0.003 + (-currentMouseY * 0.1);
+                    // Subtle rotation follow
+                    camera.rotation.y = currentMouseX * 0.02;
+                    camera.rotation.x = -currentMouseY * 0.01;
+                }
+
+                // Update Parallax with Lerp
+                if (typeof targetMouseX !== 'undefined') {
+                    currentMouseX += (targetMouseX - currentMouseX) * 0.1;
+                    currentMouseY += (targetMouseY - currentMouseY) * 0.1;
+
+                    const photoImg = document.getElementById('photo-img');
+                    const photoBox = document.getElementById('photo-box');
+
+                    if (photoImg) {
+                        photoImg.style.transform = `scale(1.15) translate(${currentMouseX * 10}px, ${currentMouseY * 10}px)`;
+                    }
+                    if (photoBox) {
+                        photoBox.style.transform = `perspective(1000px) rotateY(${currentMouseX * 5}deg) rotateX(${-currentMouseY * 5}deg)`;
+                    }
+                }
+
                 if (renderer && scene && camera) renderer.render(scene, camera);
             }
             window.addEventListener('resize', () => { if (!camera || !renderer) return; camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
@@ -3135,6 +4005,22 @@
                 document.removeEventListener('click', unlockAudio);
             };
             document.addEventListener('click', unlockAudio);
+
+            // ============ PARALLAX EFFECT FOR PHOTO FRAME ============
+            window.targetMouseX = 0;
+            window.targetMouseY = 0;
+            window.currentMouseX = 0;
+            window.currentMouseY = 0;
+
+            document.addEventListener('mousemove', (e) => {
+                targetMouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+                targetMouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+            });
+
+            document.addEventListener('mouseleave', () => {
+                targetMouseX = 0;
+                targetMouseY = 0;
+            });
 
         })();
     </script>
