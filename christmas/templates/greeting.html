@@ -1452,12 +1452,26 @@
 
         (function () {
             const DURATION = 20; // UPDATED: Last 20 seconds
+
+            // Dynamic Data from Flask
+            const recipientName = "{{ recipient_name }}";
+            const messageFile = "{{ message_file }}";
+            const picsPath = "{{ pics_path }}";
+            const staticBase = "{{ url_for('christmas.static', filename='') }}";
+
+            // Personalize Book Text
+            document.getElementById('book-text-r').innerText = `Just For ${recipientName} ✨`;
+            // Update Book Cover Title
+            const coverTitle = document.querySelector('#book-cover-title .shimmer-text');
+            if (coverTitle) coverTitle.innerText = `The Magic of ${recipientName}`;
+
             const script = [
                 // Scene 1: INTRO - The Warm Welcome
                 {
                     bg: "#1a472a",
-                    title: "✨ To Someone Special ✨",
+                    title: `✨ To ${recipientName} ✨`,
                     sub: "This isn't just a greeting... it's a little piece of my heart, wrapped in winter magic, just for you.",
+                    img: "", // Initialize img property
                     decos: ["💝", "🌟", "❄️"],
                     charPose: "wave",
                     camTarget: { x: 0, y: 4, z: 22 }
@@ -1467,6 +1481,7 @@
                     bg: "#0c1445",
                     title: "🌙 Looking Back at This Year 🌙",
                     sub: "We've been through so much together... the laughter, the struggles, the little moments that meant everything.",
+                    img: "",
                     decos: ["⭐", "🌙", "💫"],
                     charPose: "lookup",
                     camTarget: { x: -3, y: 3, z: 20 }
@@ -1476,6 +1491,7 @@
                     bg: "#5a2a2a",
                     title: "🎁 A Special Gift for You 🎁",
                     sub: "Just like these presents, my love for you is full of beautiful surprises. You are the best gift I've ever received.",
+                    img: "",
                     decos: ["🎁", "💝", "✨"],
                     charPose: "dance",
                     camTarget: { x: 4, y: 3, z: 21 }
@@ -1485,6 +1501,7 @@
                     bg: "#2d3436",
                     title: "🏠 You Are My Home 🏠",
                     sub: "No matter where life takes us, my heart will always find its way back to you. Always.",
+                    img: "",
                     decos: ["☕", "🤗", "🔥"],
                     charPose: "sit",
                     camTarget: { x: 0, y: 2, z: 18 }
@@ -1494,11 +1511,73 @@
                     bg: "#b78b05",
                     title: "🌅 Here's to Forever 🌅",
                     sub: "May this new year bring you all the joy, love, and dreams your beautiful heart deserves. I'll be right here, cheering you on.",
+                    img: "",
                     decos: ["🥂", "🎆", "💛"],
                     charPose: "bow",
                     camTarget: { x: 0, y: 5, z: 24 }
                 }
             ];
+
+            // --- DYNAMIC CONTENT LOADING ---
+            if (picsPath && picsPath !== 'None' && picsPath !== '') {
+                script.forEach((scene, idx) => {
+                    // picsPath e.g. "pics/Coworkers_Prio/Bless"
+                    // Constructed URL: /christmas/static/pics/Coworkers_Prio/Bless/Bless_1.jpg
+                    // scene.img = `${staticBase}${picsPath}/${recipientName}_${idx + 1}.jpg`;
+                    const imgUrl = `${staticBase}${picsPath}/${recipientName}_${idx + 1}.jpg`;
+                    scene.img = imgUrl;
+                    console.log(`Setting scene ${idx + 1} image to: ${imgUrl}`);
+
+                    // Preload check (optional, but good for debugging)
+                    const img = new Image();
+                    img.src = imgUrl;
+                    img.onerror = () => console.error(`Failed to load image: ${imgUrl}`);
+                });
+            }
+
+            if (messageFile && messageFile !== 'None' && messageFile.length > 0) {
+                fetch(`${staticBase}${messageFile}`)
+                    .then(res => {
+                        if (res.ok) return res.text();
+                        return null;
+                    })
+                    .then(text => {
+                        if (!text) return;
+                        text = text.replace(/\r\n/g, '\n');
+
+                        // Check if file uses [SCENE] format
+                        if (text.includes('[SCENE')) {
+                            const parts = text.split(/\[SCENE \d+\]/i).filter(p => p.trim().length > 0);
+
+                            parts.forEach((part, i) => {
+                                if (i >= script.length) return;
+
+                                const lines = part.trim().split('\n');
+                                let extractedTitle = "";
+                                let extractedMsg = "";
+
+                                const titleLine = lines.find(l => l.trim().startsWith("Title:"));
+                                if (titleLine) extractedTitle = titleLine.replace("Title:", "").trim();
+
+                                const msgIndex = part.indexOf("Message:");
+                                if (msgIndex !== -1) {
+                                    extractedMsg = part.substring(msgIndex + 8).trim();
+                                }
+
+                                if (extractedTitle) script[i].title = extractedTitle;
+                                if (extractedMsg) script[i].sub = extractedMsg;
+                            });
+
+                        } else {
+                            // Plain text mapping
+                            const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim().length > 0);
+                            script.forEach((scene, i) => {
+                                if (paragraphs[i]) scene.sub = paragraphs[i].trim();
+                            });
+                        }
+                    })
+                    .catch(e => console.error("Error loading custom message:", e));
+            }
 
             const TOTAL_TIME = script.length * DURATION;
             let timeRemaining = TOTAL_TIME, countdownInterval = null;
@@ -3398,6 +3477,13 @@
                 const photoBox = document.getElementById('photo-box');
                 const glint = document.getElementById('photo-glint');
 
+                // Update Image Source if available
+                const photoImg = document.getElementById('photo-img');
+                if (data.img && photoImg) {
+                    console.log(`Updating photo source to: ${data.img}`); // Debug
+                    photoImg.src = data.img;
+                }
+
                 // TEXT ANIMATION - Delay until unboxed
                 titleEl.innerHTML = '';
                 subEl.innerHTML = '';
@@ -3422,7 +3508,7 @@
                 };
 
                 // PHOTO REVEAL ANIMATION
-                const photoImg = document.getElementById('photo-img');
+                // const photoImg = document.getElementById('photo-img'); // Already declared above
                 const photoAura = document.getElementById('photo-aura');
                 const photoCont = document.getElementById('photo-box');
                 const giftLid = document.getElementById('gift-lid');
