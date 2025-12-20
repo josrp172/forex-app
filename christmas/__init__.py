@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, render_template, current_app
+from flask import Blueprint, render_template, current_app, request, jsonify
 
 christmas_bp = Blueprint('christmas', __name__, 
                          template_folder='templates',
@@ -24,12 +24,54 @@ def find_pics_folder(name):
             return os.path.relpath(full_path, christmas_bp.static_folder).replace('\\', '/')
     return None
 
+def load_user_passwords():
+    """Load users and passwords from path.txt"""
+    path_file = os.path.join(christmas_bp.static_folder, 'path.txt')
+    users = {}
+    if os.path.exists(path_file):
+        with open(path_file, 'r') as f:
+            for line in f:
+                if '|' in line and not line.startswith('#'):
+                    parts = line.strip().split('|')
+                    if len(parts) >= 2:
+                        name = parts[0].strip()
+                        pwd = parts[1].strip()
+                        users[pwd] = name
+    return users
+
+@christmas_bp.route('/api/unlock', methods=['POST'])
+def unlock():
+    data = request.json
+    password = data.get('password')
+    users = load_user_passwords()
+    
+    if password in users:
+        name = users[password]
+        return jsonify({
+            'success': True,
+            'name': name,
+            'message_file': find_message_file(name),
+            'pics_path': find_pics_folder(name)
+        })
+    return jsonify({'success': False})
+
 @christmas_bp.route('/')
 @christmas_bp.route('/<name>')
-def greeting(name='Abhi'):
-    message_path = find_message_file(name)
-    pics_path = find_pics_folder(name)
+def greeting(name=None):
+    message_path = None
+    pics_path = None
+    is_locked = True
+    
+    if name:
+        # Legacy/Direct access support
+        message_path = find_message_file(name)
+        pics_path = find_pics_folder(name)
+        is_locked = False
+    else:
+        name = "Guest"
+
     return render_template('greeting.html', 
                            recipient_name=name, 
                            message_file=message_path,
-                           pics_path=pics_path)
+                           pics_path=pics_path,
+                           is_locked=is_locked)

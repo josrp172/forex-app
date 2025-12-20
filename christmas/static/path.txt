@@ -1,9 +1,10 @@
-[LINKS]
-Bless: /christmas/Bless
-Leila: /christmas/Leila
-Abhi: /christmas/Abhi
-Riri: /christmas/Riri
-Anj: /christmas/Anj
-Drey: /christmas/Drey
-Kim: /christmas/Kim
-Levay: /christmas/Levay
+[CONFIG]
+# Format: Name | Password (icons: tree, star, gift, snow)
+Bless | tree,star,gift
+Leila | star,gift,snow
+Abhi | gift,snow,tree
+Riri | snow,tree,star
+Anj | tree,gift,star
+Drey | star,snow,gift
+Kim | gift,tree,snow
+Levay | snow,star,tree

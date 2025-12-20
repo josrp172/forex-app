@@ -1374,6 +1374,27 @@
             </button>
         </div>
         <div class="hint-text">✨ A short cinematic experience awaits ✨</div>
+
+        <!-- Magic Keypad (Hidden by default) -->
+        <div id="magic-keypad"
+            style="display: none; position: absolute; top: 60%; left: 50%; transform: translate(-50%, -50%); z-index: 2000; text-align: center; background: rgba(0,0,0,0.8); padding: 20px; border-radius: 20px; border: 2px solid gold;">
+            <div class="keypad-grid"
+                style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 20px;">
+                <button class="key-btn" data-icon="tree"
+                    style="font-size: 3rem; background: none; border: none; cursor: pointer; transition: transform 0.2s;">🎄</button>
+                <button class="key-btn" data-icon="star"
+                    style="font-size: 3rem; background: none; border: none; cursor: pointer; transition: transform 0.2s;">🌟</button>
+                <button class="key-btn" data-icon="gift"
+                    style="font-size: 3rem; background: none; border: none; cursor: pointer; transition: transform 0.2s;">🎁</button>
+                <button class="key-btn" data-icon="snow"
+                    style="font-size: 3rem; background: none; border: none; cursor: pointer; transition: transform 0.2s;">❄️</button>
+            </div>
+            <div id="keypad-display"
+                style="font-size: 2rem; color: gold; font-family: 'Mountains of Christmas'; min-height: 50px; letter-spacing: 5px;">
+            </div>
+            <div id="keypad-status" style="color: white; font-family: 'Pacifico'; font-size: 1.2rem; min-height: 30px;">
+            </div>
+        </div>
     </div>
     <div class="countdown-box" id="countdown-box">✨ <span id="countdown-timer">1:40</span></div>
     <div class="scene-indicator" id="scene-indicator">Page <span id="current-scene">1</span> / <span
@@ -1457,6 +1478,9 @@
             const recipientName = "{{ recipient_name }}";
             const messageFile = "{{ message_file }}";
             const picsPath = "{{ pics_path }}";
+            // Check if locked - Safe String Assignment
+            const isLockedStr = "{{ 'true' if is_locked else 'false' }}";
+            let isLocked = (isLockedStr === 'true');
             const staticBase = "{{ url_for('christmas.static', filename='') }}";
 
             // Personalize Book Text
@@ -3734,7 +3758,8 @@
                 if (poses[data.charPose]) poses[data.charPose]();
             }
 
-            document.getElementById('go-btn').onclick = () => {
+            // Define startShow function to reuse
+            const startShow = () => {
                 const btn = document.getElementById('go-btn');
                 btn.style.pointerEvents = 'none'; // Prevent double click
                 document.getElementById('bgm').play().catch(() => { });
@@ -3788,6 +3813,101 @@
                         }
                     }, "-=1.0");
             };
+
+            // Initial UI Setup for Locked State
+            if (isLocked) {
+                document.getElementById('book-text-r').innerText = "Just For You ✨";
+                const coverTitle = document.querySelector('#book-cover-title .shimmer-text');
+                if (coverTitle) coverTitle.innerText = "The Magic of Christmas";
+                const sealText = document.querySelector('.seal-text');
+                if (sealText) sealText.innerHTML = "Unlock<br>Magic";
+            }
+
+            // Seal Button Click Handler
+            document.getElementById('go-btn').onclick = (e) => {
+                const keypad = document.getElementById('magic-keypad');
+
+                if (isLocked) {
+                    e.stopPropagation();
+                    // Show Keypad
+                    gsap.to(keypad, { display: 'block', opacity: 1, duration: 0.5 });
+                    gsap.to('.play-btn', { scale: 0.8, opacity: 0.5, duration: 0.5 });
+                } else {
+                    startShow();
+                }
+            };
+
+            // Keypad Logic
+            let enteredCode = [];
+            document.querySelectorAll('.key-btn').forEach(btn => {
+                btn.onclick = (e) => {
+                    e.stopPropagation();
+                    const icon = btn.dataset.icon;
+                    const emoji = btn.innerText;
+                    enteredCode.push(icon);
+                    document.getElementById('keypad-display').innerText += emoji;
+
+                    if (enteredCode.length === 3) {
+                        checkPassword(enteredCode.join(','));
+                    }
+                };
+            });
+
+            function checkPassword(pwd) {
+                const statusEl = document.getElementById('keypad-status');
+                statusEl.innerText = "Checking Magic...";
+
+                fetch('/christmas/api/unlock', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: pwd })
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            statusEl.innerText = "Unlocked! 🎁";
+                            statusEl.style.color = "#00ff00";
+
+                            // Update Data
+                            const cleanName = data.name;
+                            const newPicsPath = data.pics_path;
+
+                            // Update UI Texts
+                            document.getElementById('book-text-r').innerText = `Just For ${cleanName} ✨`;
+                            const coverTitle = document.querySelector('#book-cover-title .shimmer-text');
+                            if (coverTitle) coverTitle.innerText = `The Magic of ${cleanName}`;
+                            script[0].title = `✨ To ${cleanName} ✨`;
+
+                            // Update Images in Script
+                            if (newPicsPath) {
+                                script.forEach((scene, idx) => {
+                                    const imgUrl = `${staticBase}${newPicsPath}/${cleanName}_${idx + 1}.jpg`;
+                                    scene.img = imgUrl;
+                                });
+                            }
+
+                            setTimeout(() => {
+                                isLocked = false;
+                                document.getElementById('magic-keypad').style.display = 'none';
+                                gsap.to('.play-btn', { scale: 1, opacity: 1, duration: 0.5 });
+                                startShow();
+                            }, 1000);
+
+                        } else {
+                            statusEl.innerText = "Wrong Magic ✨";
+                            statusEl.style.color = "red";
+                            setTimeout(() => {
+                                enteredCode = [];
+                                document.getElementById('keypad-display').innerText = "";
+                                statusEl.innerText = "";
+                            }, 1000);
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        statusEl.innerText = "Error";
+                    });
+            }
 
 
 
