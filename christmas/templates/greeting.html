@@ -3457,6 +3457,567 @@
                 }
             };
 
+            // ============ UNIQUE SCENE EFFECTS ============
+            // Scene-specific magical effects to make each cutscene more enjoyable
+
+            // Scene 1: Floating Hearts & Love Sparkles
+            function createScene1Hearts() {
+                if (!props.hearts) {
+                    props.hearts = new THREE.Group();
+                    scene.add(props.hearts);
+                }
+                // Clear previous hearts
+                while (props.hearts.children.length > 0) {
+                    props.hearts.remove(props.hearts.children[0]);
+                }
+
+                const heartColors = [0xff6b9d, 0xff4466, 0xff8fab, 0xffccdd, 0xffffff];
+
+                for (let i = 0; i < 25; i++) {
+                    const heartGroup = new THREE.Group();
+
+                    // Create heart shape from two spheres
+                    const heartMat = new THREE.MeshStandardMaterial({
+                        color: heartColors[Math.floor(Math.random() * heartColors.length)],
+                        emissive: 0xff6b9d,
+                        emissiveIntensity: 0.3,
+                        transparent: true,
+                        opacity: 0.9
+                    });
+                    const leftSphere = new THREE.Mesh(new THREE.SphereGeometry(0.08, 12, 12), heartMat);
+                    leftSphere.position.set(-0.05, 0.05, 0);
+                    const rightSphere = new THREE.Mesh(new THREE.SphereGeometry(0.08, 12, 12), heartMat);
+                    rightSphere.position.set(0.05, 0.05, 0);
+                    const bottomCone = new THREE.Mesh(new THREE.ConeGeometry(0.09, 0.15, 8), heartMat);
+                    bottomCone.position.y = -0.05;
+                    bottomCone.rotation.x = Math.PI;
+
+                    heartGroup.add(leftSphere, rightSphere, bottomCone);
+                    heartGroup.scale.setScalar(0.8 + Math.random() * 0.6);
+
+                    const x = (Math.random() - 0.5) * 20;
+                    const y = Math.random() * 10 + 2;
+                    const z = (Math.random() - 0.5) * 15;
+                    heartGroup.position.set(x, y, z);
+                    heartGroup.rotation.z = (Math.random() - 0.5) * 0.5;
+
+                    heartGroup.userData.phase = Math.random() * Math.PI * 2;
+                    heartGroup.userData.floatSpeed = 0.5 + Math.random() * 0.5;
+                    heartGroup.userData.swaySpeed = 1 + Math.random();
+
+                    props.hearts.add(heartGroup);
+
+                    // Animate floating up
+                    gsap.to(heartGroup.position, {
+                        y: y + 3 + Math.random() * 2,
+                        duration: 8 + Math.random() * 4,
+                        repeat: -1,
+                        yoyo: true,
+                        ease: "sine.inOut"
+                    });
+                    gsap.to(heartGroup.rotation, {
+                        z: heartGroup.rotation.z + 0.3,
+                        duration: 2 + Math.random(),
+                        repeat: -1,
+                        yoyo: true,
+                        ease: "sine.inOut"
+                    });
+                }
+                props.hearts.visible = true;
+            }
+
+            // Scene 2: Shooting Stars - Slow, realistic meteor with dynamic trailing line
+            function createScene2ShootingStars() {
+                if (!props.shootingStars) {
+                    props.shootingStars = new THREE.Group();
+                    scene.add(props.shootingStars);
+                }
+                while (props.shootingStars.children.length > 0) {
+                    props.shootingStars.remove(props.shootingStars.children[0]);
+                }
+
+                function launchShootingStar() {
+                    if (!props.shootingStars || !props.shootingStars.visible) return;
+
+                    // Starting position (upper right of sky)
+                    const startX = 18 + Math.random() * 8;
+                    const startY = 15 + Math.random() * 6;
+                    const startZ = -8 - Math.random() * 8;
+
+                    // End position (lower left)
+                    const endX = -20 - Math.random() * 5;
+                    const endY = startY - 12 - Math.random() * 4;
+
+                    // Create the meteor head (bright glowing point)
+                    const meteorHead = new THREE.Group();
+
+                    // Bright core
+                    const coreMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+                    const core = new THREE.Mesh(new THREE.SphereGeometry(0.12), coreMat);
+                    meteorHead.add(core);
+
+                    // Glowing halo
+                    const glowMat = new THREE.MeshBasicMaterial({
+                        color: 0xffffcc,
+                        transparent: true,
+                        opacity: 0.6
+                    });
+                    const glow = new THREE.Mesh(new THREE.SphereGeometry(0.25), glowMat);
+                    meteorHead.add(glow);
+
+                    // Outer glow
+                    const outerGlowMat = new THREE.MeshBasicMaterial({
+                        color: 0xffffaa,
+                        transparent: true,
+                        opacity: 0.3
+                    });
+                    const outerGlow = new THREE.Mesh(new THREE.SphereGeometry(0.4), outerGlowMat);
+                    meteorHead.add(outerGlow);
+
+                    meteorHead.position.set(startX, startY, startZ);
+                    props.shootingStars.add(meteorHead);
+
+                    // Array to track trail particles
+                    const trailParticles = [];
+
+                    // Create trail particles as the meteor moves
+                    const trailInterval = setInterval(() => {
+                        if (!props.shootingStars || !props.shootingStars.visible) {
+                            clearInterval(trailInterval);
+                            return;
+                        }
+
+                        // Spawn a trail particle at current meteor position
+                        const trailMat = new THREE.MeshBasicMaterial({
+                            color: 0xffffdd,
+                            transparent: true,
+                            opacity: 0.8
+                        });
+                        const trail = new THREE.Mesh(new THREE.SphereGeometry(0.06), trailMat);
+                        trail.position.copy(meteorHead.position);
+                        props.shootingStars.add(trail);
+                        trailParticles.push({ mesh: trail, mat: trailMat, birth: Date.now() });
+
+                        // Fade out old trail particles to form the line
+                        const now = Date.now();
+                        for (let i = trailParticles.length - 1; i >= 0; i--) {
+                            const p = trailParticles[i];
+                            const age = now - p.birth;
+                            const fadeTime = 1500; // Trail lasts 1.5 seconds
+
+                            if (age > fadeTime) {
+                                // Remove old particle
+                                if (props.shootingStars) props.shootingStars.remove(p.mesh);
+                                trailParticles.splice(i, 1);
+                            } else {
+                                // Fade based on age
+                                p.mat.opacity = 0.8 * (1 - age / fadeTime);
+                                // Shrink slightly
+                                const scale = 1 - (age / fadeTime) * 0.5;
+                                p.mesh.scale.setScalar(scale);
+                            }
+                        }
+                    }, 40); // Spawn trail particle every 40ms
+
+                    // SLOW movement across the sky (4-5 seconds)
+                    gsap.to(meteorHead.position, {
+                        x: endX,
+                        y: endY,
+                        duration: 4 + Math.random() * 1, // 4-5 seconds (much slower)
+                        ease: "none", // Linear movement for realism
+                        onComplete: () => {
+                            clearInterval(trailInterval);
+
+                            // Clean up remaining trail particles
+                            trailParticles.forEach(p => {
+                                gsap.to(p.mat, {
+                                    opacity: 0,
+                                    duration: 0.5,
+                                    onComplete: () => {
+                                        if (props.shootingStars) props.shootingStars.remove(p.mesh);
+                                    }
+                                });
+                            });
+
+                            // Remove meteor head
+                            if (props.shootingStars) {
+                                props.shootingStars.remove(meteorHead);
+                                // Launch next star after delay
+                                if (props.shootingStars.visible) {
+                                    setTimeout(launchShootingStar, 1500 + Math.random() * 2000);
+                                }
+                            }
+                        }
+                    });
+
+                    // Subtle glow pulse on the head
+                    gsap.to(glow.scale, {
+                        x: 1.3,
+                        y: 1.3,
+                        z: 1.3,
+                        duration: 0.3,
+                        repeat: -1,
+                        yoyo: true,
+                        ease: "sine.inOut"
+                    });
+                }
+
+                // Start with ONE shooting star after 1 second
+                setTimeout(launchShootingStar, 1000);
+
+                props.shootingStars.visible = true;
+            }
+
+            // Scene 3: Confetti Explosion
+            function createScene3Confetti() {
+                if (!props.confetti) {
+                    props.confetti = new THREE.Group();
+                    scene.add(props.confetti);
+                }
+                while (props.confetti.children.length > 0) {
+                    props.confetti.remove(props.confetti.children[0]);
+                }
+
+                const confettiColors = [0xff0000, 0x00ff00, 0x0066ff, 0xffff00, 0xff00ff, 0x00ffff, 0xffd700, 0xff6600];
+
+                function burstConfetti(originX = 0, originY = 5, originZ = 5) {
+                    for (let i = 0; i < 40; i++) {
+                        const confettiMat = new THREE.MeshBasicMaterial({
+                            color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
+                            side: THREE.DoubleSide
+                        });
+
+                        // Random shape (square or ribbon)
+                        let confetti;
+                        if (Math.random() > 0.5) {
+                            confetti = new THREE.Mesh(new THREE.PlaneGeometry(0.15, 0.15), confettiMat);
+                        } else {
+                            confetti = new THREE.Mesh(new THREE.PlaneGeometry(0.08, 0.25), confettiMat);
+                        }
+
+                        confetti.position.set(originX, originY, originZ);
+
+                        const angle = Math.random() * Math.PI * 2;
+                        const speed = 2 + Math.random() * 4;
+                        const targetX = originX + Math.cos(angle) * speed;
+                        const targetY = originY + 2 + Math.random() * 3;
+                        const targetZ = originZ + Math.sin(angle) * speed;
+
+                        props.confetti.add(confetti);
+
+                        // Burst up and out
+                        gsap.to(confetti.position, {
+                            x: targetX,
+                            y: targetY,
+                            z: targetZ,
+                            duration: 0.8,
+                            ease: "power2.out"
+                        });
+
+                        // Then flutter down
+                        gsap.to(confetti.position, {
+                            y: -3,
+                            duration: 3 + Math.random() * 2,
+                            delay: 0.8,
+                            ease: "power1.in",
+                            onComplete: () => {
+                                if (props.confetti) props.confetti.remove(confetti);
+                            }
+                        });
+
+                        // Spin while falling
+                        gsap.to(confetti.rotation, {
+                            x: Math.random() * Math.PI * 4,
+                            y: Math.random() * Math.PI * 4,
+                            z: Math.random() * Math.PI * 4,
+                            duration: 4,
+                            ease: "none"
+                        });
+                    }
+                }
+
+                // Initial bursts
+                setTimeout(() => burstConfetti(0, 6, 4), 500);
+                setTimeout(() => burstConfetti(-3, 5, 5), 1200);
+                setTimeout(() => burstConfetti(3, 5, 5), 1800);
+
+                // Periodic bursts
+                props.confettiInterval = setInterval(() => {
+                    if (props.confetti && props.confetti.visible) {
+                        burstConfetti((Math.random() - 0.5) * 8, 5 + Math.random() * 3, 4 + Math.random() * 2);
+                    }
+                }, 3000);
+
+                props.confetti.visible = true;
+            }
+
+            // Scene 4: Cozy Campfire - Small, grounded in snow, off to the side
+            function createScene4CozyGlow() {
+                if (!props.cozyEmbers) {
+                    props.cozyEmbers = new THREE.Group();
+                    scene.add(props.cozyEmbers);
+                }
+                while (props.cozyEmbers.children.length > 0) {
+                    props.cozyEmbers.remove(props.cozyEmbers.children[0]);
+                }
+
+                // Position the entire fire group to the LEFT side, grounded in snow
+                const fireX = -6;  // Left side of scene
+                const fireY = -3.2; // At ground level (snow)
+                const fireZ = 3;   // In front
+
+                // ===== LOG BASE (makes it look grounded) =====
+                const logMat = new THREE.MeshStandardMaterial({ color: 0x3d2817, roughness: 0.9 });
+                // Crossed logs
+                const log1 = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 0.6, 8), logMat);
+                log1.position.set(fireX, fireY, fireZ);
+                log1.rotation.z = Math.PI / 2;
+                log1.rotation.y = 0.3;
+                props.cozyEmbers.add(log1);
+
+                const log2 = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 0.6, 8), logMat);
+                log2.position.set(fireX, fireY, fireZ);
+                log2.rotation.z = Math.PI / 2;
+                log2.rotation.y = -0.3;
+                props.cozyEmbers.add(log2);
+
+                // Stone circle around fire
+                const stoneMat = new THREE.MeshStandardMaterial({ color: 0x555555, roughness: 0.8 });
+                for (let i = 0; i < 8; i++) {
+                    const angle = (i / 8) * Math.PI * 2;
+                    const stone = new THREE.Mesh(new THREE.SphereGeometry(0.08 + Math.random() * 0.04), stoneMat);
+                    stone.position.set(
+                        fireX + Math.cos(angle) * 0.35,
+                        fireY - 0.05,
+                        fireZ + Math.sin(angle) * 0.35
+                    );
+                    stone.scale.y = 0.6;
+                    props.cozyEmbers.add(stone);
+                }
+
+                // ===== SMALL FLAMES =====
+                const flameColors = [0xff2200, 0xff4400, 0xff6600, 0xffaa00];
+                for (let i = 0; i < 5; i++) {
+                    const flameMat = new THREE.MeshBasicMaterial({
+                        color: flameColors[Math.floor(Math.random() * flameColors.length)],
+                        transparent: true,
+                        opacity: 0.8
+                    });
+                    // SMALLER flames
+                    const flame = new THREE.Mesh(
+                        new THREE.ConeGeometry(0.06 + Math.random() * 0.08, 0.25 + Math.random() * 0.15, 6),
+                        flameMat
+                    );
+                    const xOffset = (Math.random() - 0.5) * 0.3;
+                    flame.position.set(fireX + xOffset, fireY + 0.15, fireZ + (Math.random() - 0.5) * 0.2);
+                    props.cozyEmbers.add(flame);
+
+                    // Flame dance animation
+                    gsap.to(flame.scale, {
+                        y: 0.7 + Math.random() * 0.4,
+                        x: 0.8 + Math.random() * 0.3,
+                        duration: 0.15 + Math.random() * 0.2,
+                        repeat: -1,
+                        yoyo: true,
+                        ease: "sine.inOut"
+                    });
+                    gsap.to(flame.position, {
+                        y: flame.position.y + 0.05,
+                        duration: 0.2 + Math.random() * 0.1,
+                        repeat: -1,
+                        yoyo: true,
+                        ease: "sine.inOut"
+                    });
+                }
+
+                // ===== WARM LIGHT (smaller radius) =====
+                const fireLight = new THREE.PointLight(0xff4400, 1.5, 8);
+                fireLight.position.set(fireX, fireY + 0.3, fireZ);
+                props.cozyEmbers.add(fireLight);
+
+                // Flickering
+                gsap.to(fireLight, {
+                    intensity: 2.0,
+                    duration: 0.15,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: "power1.inOut"
+                });
+
+                // ===== SMALL RISING SPARKS =====
+                function createEmber() {
+                    const emberColors = [0xff4400, 0xff6600, 0xffaa00, 0xffcc00];
+                    const color = emberColors[Math.floor(Math.random() * emberColors.length)];
+                    const emberMat = new THREE.MeshBasicMaterial({
+                        color: color,
+                        transparent: true,
+                        opacity: 0.9
+                    });
+                    // Small embers
+                    const size = 0.015 + Math.random() * 0.02;
+                    const ember = new THREE.Mesh(new THREE.SphereGeometry(size), emberMat);
+
+                    // Start from fire position
+                    const startX = fireX + (Math.random() - 0.5) * 0.3;
+                    const startZ = fireZ + (Math.random() - 0.5) * 0.3;
+                    ember.position.set(startX, fireY + 0.3, startZ);
+
+                    props.cozyEmbers.add(ember);
+
+                    // Rise and drift
+                    gsap.to(ember.position, {
+                        y: fireY + 1.5 + Math.random() * 1,
+                        x: startX + (Math.random() - 0.5) * 0.8,
+                        duration: 1.5 + Math.random() * 1,
+                        ease: "power1.out",
+                        onComplete: () => {
+                            if (props.cozyEmbers) props.cozyEmbers.remove(ember);
+                        }
+                    });
+                    gsap.to(emberMat, {
+                        opacity: 0,
+                        duration: 1,
+                        delay: 0.8,
+                        ease: "power2.in"
+                    });
+                }
+
+                // Create embers periodically (not too many)
+                props.emberInterval = setInterval(() => {
+                    if (props.cozyEmbers && props.cozyEmbers.visible) {
+                        createEmber();
+                        if (Math.random() > 0.6) createEmber();
+                    }
+                }, 150);
+
+                // Initial burst
+                for (let i = 0; i < 10; i++) {
+                    setTimeout(createEmber, i * 80);
+                }
+
+                props.cozyEmbers.visible = true;
+            }
+
+            // Scene 5: Fireworks - OPTIMIZED for performance
+            function createScene5Fireworks() {
+                if (!props.fireworks) {
+                    props.fireworks = new THREE.Group();
+                    scene.add(props.fireworks);
+                }
+                while (props.fireworks.children.length > 0) {
+                    props.fireworks.remove(props.fireworks.children[0]);
+                }
+
+                const fireworkColors = [0xff0055, 0x00ffaa, 0xffdd00, 0xff00ff, 0x00aaff, 0xffffff];
+
+                // Simplified explosion - fewer particles for better performance
+                function explodeFirework(x, y, z) {
+                    const color = fireworkColors[Math.floor(Math.random() * fireworkColors.length)];
+                    // REDUCED particle count for performance (40-60 instead of 120-180)
+                    const particleCount = 40 + Math.floor(Math.random() * 20);
+                    const explosionRadius = 2.5 + Math.random() * 2;
+
+                    for (let i = 0; i < particleCount; i++) {
+                        const particleMat = new THREE.MeshBasicMaterial({
+                            color: color,
+                            transparent: true,
+                            opacity: 1
+                        });
+                        const particle = new THREE.Mesh(
+                            new THREE.SphereGeometry(0.08 + Math.random() * 0.04),
+                            particleMat
+                        );
+
+                        particle.position.set(x, y, z);
+                        props.fireworks.add(particle);
+
+                        // Spherical explosion
+                        const theta = Math.random() * Math.PI * 2;
+                        const phi = Math.acos(2 * Math.random() - 1);
+                        const radius = explosionRadius * (0.5 + Math.random() * 0.5);
+
+                        const targetX = x + radius * Math.sin(phi) * Math.cos(theta);
+                        const targetY = y + radius * Math.sin(phi) * Math.sin(theta);
+                        const targetZ = z + radius * Math.cos(phi);
+
+                        // Animation
+                        gsap.to(particle.position, {
+                            x: targetX,
+                            y: targetY - 1.5,
+                            z: targetZ,
+                            duration: 1.5 + Math.random() * 0.5,
+                            ease: "power2.out"
+                        });
+
+                        // Fade out and remove
+                        gsap.to(particleMat, {
+                            opacity: 0,
+                            duration: 1.5,
+                            delay: 0.3 + Math.random() * 0.3,
+                            ease: "power2.in",
+                            onComplete: () => {
+                                if (props.fireworks) props.fireworks.remove(particle);
+                            }
+                        });
+                    }
+
+                    // Flash of light
+                    const flashLight = new THREE.PointLight(color, 2, 12);
+                    flashLight.position.set(x, y, z);
+                    props.fireworks.add(flashLight);
+                    gsap.to(flashLight, {
+                        intensity: 0,
+                        duration: 0.4,
+                        ease: "power2.out",
+                        onComplete: () => {
+                            if (props.fireworks) props.fireworks.remove(flashLight);
+                        }
+                    });
+                }
+
+                // Simple launch - no rocket trail for performance
+                const launchFirework = () => {
+                    if (!props.fireworks || !props.fireworks.visible) return;
+                    const x = (Math.random() - 0.5) * 18;
+                    const y = 8 + Math.random() * 6;
+                    const z = -4 - Math.random() * 6;
+                    explodeFirework(x, y, z);
+                };
+
+                // Launch just 2 initially
+                setTimeout(launchFirework, 500);
+                setTimeout(launchFirework, 1500);
+
+                // Launch ONE firework every 1.5-2.5 seconds (not multiple)
+                props.fireworkInterval = setInterval(() => {
+                    if (props.fireworks && props.fireworks.visible) {
+                        launchFirework();
+                    }
+                }, 1500 + Math.random() * 1000);
+
+                props.fireworks.visible = true;
+            }
+
+            // Hide all scene-specific effects
+            function hideAllSceneEffects() {
+                if (props.hearts) props.hearts.visible = false;
+                if (props.shootingStars) {
+                    props.shootingStars.visible = false;
+                    if (props.shootingStarInterval) clearInterval(props.shootingStarInterval);
+                }
+                if (props.confetti) {
+                    props.confetti.visible = false;
+                    if (props.confettiInterval) clearInterval(props.confettiInterval);
+                }
+                if (props.cozyEmbers) {
+                    props.cozyEmbers.visible = false;
+                    if (props.emberInterval) clearInterval(props.emberInterval);
+                }
+                if (props.fireworks) {
+                    props.fireworks.visible = false;
+                    if (props.fireworkInterval) clearInterval(props.fireworkInterval);
+                }
+            }
 
 
             function nextScene() {
@@ -4254,7 +4815,22 @@
                     }
                 }
 
+                // Hide previous scene effects and reset poses
+                hideAllSceneEffects();
                 poses.reset();
+
+                // Trigger unique scene-specific effects
+                if (sceneIdx === 0) {
+                    createScene1Hearts(); // Floating hearts for warm welcome
+                } else if (sceneIdx === 1) {
+                    createScene2ShootingStars(); // Shooting stars for reflection
+                } else if (sceneIdx === 2) {
+                    createScene3Confetti(); // Confetti for gift excitement
+                } else if (sceneIdx === 3) {
+                    createScene4CozyGlow(); // Fireplace embers for comfort
+                } else if (sceneIdx === 4) {
+                    createScene5Fireworks(); // Fireworks for hope/new year
+                }
 
                 // Reset presents
                 presents.forEach(p => {
