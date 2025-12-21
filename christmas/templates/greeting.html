@@ -1658,7 +1658,7 @@
             const DURATION = 20; // UPDATED: Last 20 seconds
 
             // Dynamic Data from Flask
-            const recipientName = "{{ recipient_name }}";
+            let recipientName = "{{ recipient_name }}";
             const messageFile = "{{ message_file }}";
             const picsPath = "{{ pics_path }}";
             // Check if locked - Safe String Assignment
@@ -4563,10 +4563,12 @@
                             const newPicsPath = data.pics_path;
 
                             // Update UI Texts
+                            recipientName = cleanName; // Update global variable for finale
                             document.getElementById('book-text-r').innerText = `Just For ${cleanName} ✨`;
                             const coverTitle = document.querySelector('#book-cover-title .shimmer-text');
                             if (coverTitle) coverTitle.innerText = `The Magic of ${cleanName}`;
                             script[0].title = `✨ To ${cleanName} ✨`;
+                            script[0].name = cleanName; // Set name on script for finale logic
 
                             // Update Images in Script
                             if (newPicsPath) {
