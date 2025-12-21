@@ -1,10 +1,10 @@
 [CONFIG]
-# Format: Name | Password (icons: tree, star, gift, snow)
-Bless | tree,star,gift
-Leila | star,gift,snow
-Abhi | gift,snow,tree
-Riri | snow,tree,star
-Anj | tree,gift,star
-Drey | star,snow,gift
-Kim | gift,tree,snow
-Levay | snow,star,tree
+# Format: Name | Password (icons: tree, star, gift, snow, bell, candle)
+Bless | tree,star,gift,bell,candle,snow,tree,bell,gift,star
+Leila | star,gift,snow,candle,bell,tree,star,snow,bell,gift
+Abhi | gift,snow,tree,bell,candle,star,gift,tree,candle,snow
+Riri | snow,tree,star,candle,bell,gift,snow,star,bell,tree
+Anj | bell,candle,tree,star,gift,snow,bell,tree,gift,candle
+Drey | candle,bell,star,gift,snow,tree,candle,star,snow,bell
+Kim | tree,snow,gift,bell,star,candle,tree,gift,star,bell
+Levay | star,tree,snow,candle,gift,bell,star,snow,bell,candle

@@ -45,8 +45,21 @@ def unlock():
     password = data.get('password')
     users = load_user_passwords()
     
-    if password in users:
-        name = users[password]
+    # Localhost Testing Shortcuts
+    is_local = request.host.startswith('localhost') or request.host.startswith('127.0.0.1')
+    if is_local:
+        if password == "tree,tree,tree,tree,tree,tree,tree,tree,tree,tree":
+            name = "Bless"
+        elif password == "star,star,star,star,star,star,star,star,star,star":
+            name = "Abhi"
+        elif password == "gift,gift,gift,gift,gift,gift,gift,gift,gift,gift":
+            name = "Riri"
+        else:
+            name = users.get(password)
+    else:
+        name = users.get(password)
+
+    if name:
         return jsonify({
             'success': True,
             'name': name,

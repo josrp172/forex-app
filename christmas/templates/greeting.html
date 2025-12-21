@@ -746,7 +746,9 @@
                 inset 0 0 0 8px #9b1c1c;
             /* The outer rim/lip of the wax seal */
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            pointer-events: auto;
+            pointer-events: auto !important;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
             position: relative;
             z-index: 10;
             width: 150px;
@@ -806,11 +808,26 @@
         }
 
         .play-btn::before {
-            content: "🔒";
+            content: "";
+            position: absolute;
+            top: -25px;
+            bottom: -25px;
+            left: -25px;
+            right: -25px;
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        .seal-lock-icon {
             font-size: 1.5rem;
             filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.4));
             margin-bottom: 2px;
             display: block;
+            pointer-events: none;
+        }
+
+        .play-btn:active {
+            transform: scale(0.95);
         }
 
         @keyframes sealGlow {
@@ -843,6 +860,18 @@
             max-width: 100px;
             line-height: 1.2;
             text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.8);
+            pointer-events: none;
+            /* Make sure text doesn't steal clicks */
+        }
+
+        .key-btn::before {
+            content: "";
+            position: absolute;
+            top: -15px;
+            bottom: -15px;
+            left: -15px;
+            right: -15px;
+            border-radius: 50%;
         }
 
         .timer-line {
@@ -972,6 +1001,8 @@
             mix-blend-mode: screen;
             filter: blur(2px);
             animation: sparklePulse 3s infinite alternate;
+            pointer-events: none;
+            /* FIX: Don't block button clicks */
         }
 
         @keyframes sparklePulse {
@@ -1370,29 +1401,181 @@
             </div>
 
             <button class="play-btn" id="go-btn">
+                <div class="seal-lock-icon">🔒</div>
                 <span class="seal-text">Open Just<br>For You</span>
             </button>
         </div>
         <div class="hint-text">✨ A short cinematic experience awaits ✨</div>
 
-        <!-- Magic Keypad (Hidden by default) -->
+        <!-- Magic Keypad (Ornate Book Lock) -->
         <div id="magic-keypad"
-            style="display: none; position: absolute; top: 60%; left: 50%; transform: translate(-50%, -50%); z-index: 2000; text-align: center; background: rgba(0,0,0,0.8); padding: 20px; border-radius: 20px; border: 2px solid gold;">
-            <div class="keypad-grid"
-                style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 20px;">
-                <button class="key-btn" data-icon="tree"
-                    style="font-size: 3rem; background: none; border: none; cursor: pointer; transition: transform 0.2s;">🎄</button>
-                <button class="key-btn" data-icon="star"
-                    style="font-size: 3rem; background: none; border: none; cursor: pointer; transition: transform 0.2s;">🌟</button>
-                <button class="key-btn" data-icon="gift"
-                    style="font-size: 3rem; background: none; border: none; cursor: pointer; transition: transform 0.2s;">🎁</button>
-                <button class="key-btn" data-icon="snow"
-                    style="font-size: 3rem; background: none; border: none; cursor: pointer; transition: transform 0.2s;">❄️</button>
-            </div>
-            <div id="keypad-display"
-                style="font-size: 2rem; color: gold; font-family: 'Mountains of Christmas'; min-height: 50px; letter-spacing: 5px;">
-            </div>
-            <div id="keypad-status" style="color: white; font-family: 'Pacifico'; font-size: 1.2rem; min-height: 30px;">
+            style="display: none; position: absolute; bottom: 5%; left: 50%; transform: translateX(-50%); z-index: 2000; text-align: center;">
+
+            <!-- Outer Ornate Frame -->
+            <div style="
+                background: linear-gradient(135deg, #4a1c1c 0%, #6b2d2d 25%, #4a1c1c 50%, #5a2424 75%, #4a1c1c 100%);
+                padding: 20px;
+                border-radius: 12px;
+                border: 3px solid #b8860b;
+                box-shadow: 
+                    0 8px 32px rgba(0,0,0,0.6),
+                    inset 0 0 20px rgba(0,0,0,0.4),
+                    inset 0 2px 0 rgba(255,255,255,0.1);
+                min-width: 280px;
+                position: relative;
+            ">
+                <!-- Gold Corner Flourishes -->
+                <div
+                    style="position: absolute; top: -5px; left: -5px; font-size: 1.5rem; color: #b8860b; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+                    ❧</div>
+                <div
+                    style="position: absolute; top: -5px; right: -5px; font-size: 1.5rem; color: #b8860b; text-shadow: 0 2px 4px rgba(0,0,0,0.5); transform: scaleX(-1);">
+                    ❧</div>
+                <div
+                    style="position: absolute; bottom: -5px; left: -5px; font-size: 1.5rem; color: #b8860b; text-shadow: 0 2px 4px rgba(0,0,0,0.5); transform: scaleY(-1);">
+                    ❧</div>
+                <div
+                    style="position: absolute; bottom: -5px; right: -5px; font-size: 1.5rem; color: #b8860b; text-shadow: 0 2px 4px rgba(0,0,0,0.5); transform: scale(-1);">
+                    ❧</div>
+
+                <!-- Inner Panel -->
+                <div style="
+                    background: linear-gradient(180deg, #3d1515 0%, #2a0f0f 100%);
+                    border-radius: 8px;
+                    padding: 15px;
+                    border: 2px solid #8b6914;
+                    box-shadow: inset 0 0 15px rgba(0,0,0,0.6);
+                ">
+                    <!-- Title with Flourishes -->
+                    <div
+                        style="font-family: 'Mountains of Christmas', cursive; color: #d4af37; font-size: 1.3rem; margin-bottom: 12px; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">
+                        ✦ Enter the Magic Code ✦
+                    </div>
+
+                    <!-- Keypad Grid -->
+                    <div class="keypad-grid"
+                        style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px;">
+                        <button class="key-btn" data-icon="tree" style="
+                            font-size: 1.8rem; 
+                            background: radial-gradient(ellipse at 30% 30%, #d4af37 0%, #8b6914 60%, #6b4f0f 100%);
+                            border: 2px solid #ffd700;
+                            border-radius: 50%;
+                            width: 55px; height: 55px;
+                            cursor: pointer;
+                            box-shadow: 0 4px 8px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.3);
+                            transition: all 0.15s ease;
+                            position: relative;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            padding: 0;
+                        ">🎄</button>
+                        <button class="key-btn" data-icon="star" style="
+                            font-size: 1.8rem; 
+                            background: radial-gradient(ellipse at 30% 30%, #d4af37 0%, #8b6914 60%, #6b4f0f 100%);
+                            border: 2px solid #ffd700;
+                            border-radius: 50%;
+                            width: 55px; height: 55px;
+                            cursor: pointer;
+                            box-shadow: 0 4px 8px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.3);
+                            transition: all 0.15s ease;
+                            position: relative;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            padding: 0;
+                        ">🌟</button>
+                        <button class="key-btn" data-icon="gift" style="
+                            font-size: 1.8rem; 
+                            background: radial-gradient(ellipse at 30% 30%, #d4af37 0%, #8b6914 60%, #6b4f0f 100%);
+                            border: 2px solid #ffd700;
+                            border-radius: 50%;
+                            width: 55px; height: 55px;
+                            cursor: pointer;
+                            box-shadow: 0 4px 8px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.3);
+                            transition: all 0.15s ease;
+                            position: relative;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            padding: 0;
+                        ">🎁</button>
+                        <button class="key-btn" data-icon="snow" style="
+                            font-size: 1.8rem; 
+                            background: radial-gradient(ellipse at 30% 30%, #d4af37 0%, #8b6914 60%, #6b4f0f 100%);
+                            border: 2px solid #ffd700;
+                            border-radius: 50%;
+                            width: 55px; height: 55px;
+                            cursor: pointer;
+                            box-shadow: 0 4px 8px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.3);
+                            transition: all 0.15s ease;
+                            position: relative;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            padding: 0;
+                        ">❄️</button>
+                        <button class="key-btn" data-icon="bell" style="
+                            font-size: 1.8rem; 
+                            background: radial-gradient(ellipse at 30% 30%, #d4af37 0%, #8b6914 60%, #6b4f0f 100%);
+                            border: 2px solid #ffd700;
+                            border-radius: 50%;
+                            width: 55px; height: 55px;
+                            cursor: pointer;
+                            box-shadow: 0 4px 8px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.3);
+                            transition: all 0.15s ease;
+                            position: relative;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            padding: 0;
+                        ">🔔</button>
+                        <button class="key-btn" data-icon="candle" style="
+                            font-size: 1.8rem; 
+                            background: radial-gradient(ellipse at 30% 30%, #d4af37 0%, #8b6914 60%, #6b4f0f 100%);
+                            border: 2px solid #ffd700;
+                            border-radius: 50%;
+                            width: 55px; height: 55px;
+                            cursor: pointer;
+                            box-shadow: 0 4px 8px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.3);
+                            transition: all 0.15s ease;
+                            position: relative;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            padding: 0;
+                        ">🕯️</button>
+                    </div>
+
+                    <!-- Display Area (Dark Inset) -->
+                    <div style="
+                        background: linear-gradient(180deg, #1a0a0a 0%, #2d1212 50%, #1a0a0a 100%);
+                        border-radius: 6px;
+                        padding: 10px 12px;
+                        margin-bottom: 8px;
+                        border: 2px solid #b8860b;
+                        box-shadow: inset 0 3px 12px rgba(0,0,0,0.8), 0 1px 0 rgba(255,215,0,0.2);
+                        min-height: 45px;
+                    ">
+                        <div id="keypad-display" style="
+                            font-size: 1.6rem;
+                            color: #ffd700;
+                            font-family: 'Mountains of Christmas', cursive;
+                            letter-spacing: 4px;
+                            min-height: 30px;
+                            text-shadow: 0 0 10px rgba(255,215,0,0.5);
+                        "></div>
+                    </div>
+
+                    <!-- Status Message -->
+                    <div id="keypad-status" style="
+                        color: #d4af37;
+                        font-family: 'Pacifico', cursive;
+                        font-size: 1rem;
+                        min-height: 20px;
+                        text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+                    "></div>
+                </div>
             </div>
         </div>
     </div>
@@ -1450,7 +1633,7 @@
             <p style="font-family: 'Pacifico', cursive; font-size: 2.5rem; color: white;">& Advance Happy New Year!</p>
         </div>
     </div>
-    <audio id="bgm" loop>
+    <audio id="bgm" loop autoplay>
         <source src="{{ url_for('christmas.static', filename='Winter Book.mp3') }}" type="audio/mpeg">
     </audio>
 
@@ -1559,51 +1742,51 @@
                 });
             }
 
+            function updateScriptWithContent(text) {
+                if (!text) return;
+                text = text.replace(/\r\n/g, '\n');
+
+                if (text.includes('[SCENE')) {
+                    const parts = text.split(/\[SCENE \d+\]/i).filter(p => p.trim().length > 0);
+                    parts.forEach((part, i) => {
+                        if (i >= script.length) return;
+                        const lines = part.trim().split('\n');
+                        let extractedTitle = "";
+                        let extractedMsg = "";
+
+                        const titleLine = lines.find(l => l.trim().startsWith("Title:"));
+                        if (titleLine) extractedTitle = titleLine.replace("Title:", "").trim();
+
+                        const msgIndex = part.indexOf("Message:");
+                        if (msgIndex !== -1) {
+                            extractedMsg = part.substring(msgIndex + 8).trim();
+                        }
+
+                        if (extractedTitle) script[i].title = extractedTitle;
+                        if (extractedMsg) script[i].sub = extractedMsg;
+                    });
+                } else {
+                    const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim().length > 0);
+                    script.forEach((scene, i) => {
+                        if (paragraphs[i]) scene.sub = paragraphs[i].trim();
+                    });
+                }
+            }
+
             if (messageFile && messageFile !== 'None' && messageFile.length > 0) {
                 fetch(`${staticBase}${messageFile}`)
-                    .then(res => {
-                        if (res.ok) return res.text();
-                        return null;
-                    })
-                    .then(text => {
-                        if (!text) return;
-                        text = text.replace(/\r\n/g, '\n');
-
-                        // Check if file uses [SCENE] format
-                        if (text.includes('[SCENE')) {
-                            const parts = text.split(/\[SCENE \d+\]/i).filter(p => p.trim().length > 0);
-
-                            parts.forEach((part, i) => {
-                                if (i >= script.length) return;
-
-                                const lines = part.trim().split('\n');
-                                let extractedTitle = "";
-                                let extractedMsg = "";
-
-                                const titleLine = lines.find(l => l.trim().startsWith("Title:"));
-                                if (titleLine) extractedTitle = titleLine.replace("Title:", "").trim();
-
-                                const msgIndex = part.indexOf("Message:");
-                                if (msgIndex !== -1) {
-                                    extractedMsg = part.substring(msgIndex + 8).trim();
-                                }
-
-                                if (extractedTitle) script[i].title = extractedTitle;
-                                if (extractedMsg) script[i].sub = extractedMsg;
-                            });
-
-                        } else {
-                            // Plain text mapping
-                            const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim().length > 0);
-                            script.forEach((scene, i) => {
-                                if (paragraphs[i]) scene.sub = paragraphs[i].trim();
-                            });
-                        }
-                    })
+                    .then(res => res.ok ? res.text() : null)
+                    .then(text => updateScriptWithContent(text))
                     .catch(e => console.error("Error loading custom message:", e));
             }
 
-            const TOTAL_TIME = script.length * DURATION;
+            const SCENE_DURATION = 20;
+            const SCENE_1_DELAY = 5;
+            const OTHER_DELAY = 3;
+            const PHOTO_STACK_TIME = 2; // Time for photos to stack in center
+            const PHOTO_SPREAD_TIME = 5; // Time to view floating photos spread
+            const FINALE_CLOSE_TIME = 3; // Time for book closing animation
+            const TOTAL_TIME = (SCENE_DURATION * script.length) + SCENE_1_DELAY + (OTHER_DELAY * (script.length - 1)) + PHOTO_STACK_TIME + PHOTO_SPREAD_TIME + FINALE_CLOSE_TIME;
             let timeRemaining = TOTAL_TIME, countdownInterval = null;
             let appState = { idx: -1, isPlaying: false };
             // Declare as window properties to ensure global accessibility and fix ReferenceError
@@ -1611,16 +1794,17 @@
             let elf, christmasTree, snowman, presents = [], props = {}, clock;
             let trees = [];
 
-            function startChapterTimer() {
+            function startChapterTimer(customDuration) {
+                const dur = customDuration || SCENE_DURATION;
                 if (countdownInterval) clearInterval(countdownInterval);
                 countdownInterval = setInterval(updateCountdown, 1000);
 
                 gsap.killTweensOf('#timer');
-                gsap.fromTo('#timer', { width: "0%" }, { width: "100%", duration: DURATION, ease: "linear" });
+                gsap.fromTo('#timer', { width: "0%" }, { width: "100%", duration: dur, ease: "linear" });
 
                 // Clear any existing delayed calls for nextScene
                 gsap.killTweensOf(nextScene);
-                gsap.delayedCall(DURATION, nextScene);
+                gsap.delayedCall(dur, nextScene);
             }
 
             // Old Book Dust Emitter
@@ -3300,14 +3484,17 @@
                         .to(['#book-spine', '#book-clasp', '#book-ribbon', '#book-spine-glow'], { opacity: 0, duration: 0.8, ease: "power2.inOut" }, "-=1.5") // Fade spine out as pages open
                         .set(overlay, { visibility: 'hidden' })
                         .add(() => {
+                            // Start Countdown immediately for SCENE 1 (including the 5s delay)
+                            startChapterTimer(SCENE_DURATION + SCENE_1_DELAY);
+
                             // 5 SECONDS VIEWING DELAY BEFORE UI & TEXT
-                            gsap.delayedCall(5, () => {
+                            gsap.delayedCall(SCENE_1_DELAY, () => {
                                 // Show UI (indicator and countdown)
                                 document.getElementById('scene-indicator').style.display = 'block';
                                 document.getElementById('countdown-box').style.display = 'flex';
                                 gsap.fromTo(['.countdown-box', '.scene-indicator', '.timer-line', '#ui-layer'], { opacity: 0 }, { opacity: 1, duration: 1.5 });
 
-                                // Start animations (Timer will be triggered inside unboxing)
+                                // Start animations
                                 startSceneAnimations(data);
                             });
                         });
@@ -3406,31 +3593,163 @@
                 const tlTextR = document.getElementById('book-text-r');
                 const flash = document.getElementById('finale-flash');
 
-                // Clear UI and 3D Scene
-                gsap.to(['#ui-layer', '.countdown-box', '.scene-indicator', '.hud', '.timer-line', '#canvas-container'], { opacity: 0, duration: 1.5, ease: "power2.inOut" });
+                // --- CREATE FLOATING PHOTO GALLERY ---
+                const galleryContainer = document.createElement('div');
+                galleryContainer.id = 'finale-gallery';
+                galleryContainer.style.cssText = `
+                    position: fixed;
+                    top: 0; left: 0;
+                    width: 100%; height: 100%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 1999;
+                    pointer-events: none;
+                `;
+                document.body.appendChild(galleryContainer);
 
-                // Final Book Closing Sequence
-                const masterTl = gsap.timeline();
+                // Filter scenes that have images
+                const scenesWithImages = script.filter(s => s.img && s.img.length > 0);
+                const imageCount = scenesWithImages.length;
+
+                // Dynamically generate positions based on image count
+                const generatePositions = (count) => {
+                    const positions = [];
+                    const angleStep = (Math.PI * 2) / count;
+                    const radiusX = 28;
+                    const radiusY = 22;
+
+                    for (let i = 0; i < count; i++) {
+                        const angle = angleStep * i - Math.PI / 2; // Start from top
+                        positions.push({
+                            x: Math.cos(angle) * radiusX,
+                            y: Math.sin(angle) * radiusY,
+                            rot: (i % 2 === 0 ? 1 : -1) * (8 + Math.random() * 8),
+                            delay: i * 0.25
+                        });
+                    }
+                    return positions;
+                };
+
+                const positions = generatePositions(imageCount);
+
+                const photoFrames = [];
+
+                scenesWithImages.forEach((scene, idx) => {
+                    const photoFrame = document.createElement('div');
+                    photoFrame.className = 'finale-photo';
+                    photoFrame.style.cssText = `
+                        position: absolute;
+                        width: 180px;
+                        height: 240px;
+                        background: linear-gradient(145deg, #ffd700, #b8860b);
+                        padding: 12px;
+                        border-radius: 10px;
+                        box-shadow: 0 20px 50px rgba(0,0,0,0.6), inset 0 3px 8px rgba(255,255,255,0.4);
+                        opacity: 0;
+                        transform: translateY(100px) scale(0.5) rotate(${positions[idx].rot}deg);
+                    `;
+
+                    const img = document.createElement('img');
+                    img.src = scene.img;
+                    img.style.cssText = `
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                        border-radius: 6px;
+                    `;
+                    photoFrame.appendChild(img);
+                    galleryContainer.appendChild(photoFrame);
+                    photoFrames.push(photoFrame);
+
+                    // Phase 1: Initial spread across canvas
+                    gsap.to(photoFrame, {
+                        opacity: 0.8,
+                        y: positions[idx].y + '%',
+                        x: positions[idx].x + '%',
+                        scale: 1,
+                        rotation: positions[idx].rot,
+                        duration: 1.5,
+                        delay: idx * 0.25,
+                        ease: "back.out(1.2)"
+                    });
+                });
+
+                // Phase 2: After initial spread, spread even WIDER across entire canvas
+                const wideSpreadDelay = PHOTO_STACK_TIME; // After initial viewing
+
+                // Generate wider positions (spread across entire screen)
+                const widePositions = [];
+                const wideRadiusX = 42;
+                const wideRadiusY = 38;
+                for (let i = 0; i < imageCount; i++) {
+                    const angle = (Math.PI * 2 / imageCount) * i - Math.PI / 2;
+                    widePositions.push({
+                        x: Math.cos(angle) * wideRadiusX,
+                        y: Math.sin(angle) * wideRadiusY,
+                        rot: (i % 2 === 0 ? 1 : -1) * (12 + Math.random() * 10)
+                    });
+                }
+
+                scenesWithImages.forEach((scene, idx) => {
+                    const photoFrame = photoFrames[idx];
+
+                    // Spread wider across the canvas
+                    gsap.to(photoFrame, {
+                        y: widePositions[idx].y + '%',
+                        x: widePositions[idx].x + '%',
+                        rotation: widePositions[idx].rot,
+                        opacity: 0.7,
+                        scale: 1.1,
+                        duration: 1.5,
+                        delay: wideSpreadDelay + idx * 0.1,
+                        ease: "power2.out"
+                    });
+
+                    // Gentle floating bob after wide spread
+                    gsap.to(photoFrame, {
+                        y: `${widePositions[idx].y - 4}%`,
+                        rotation: widePositions[idx].rot + (idx % 2 === 0 ? 5 : -5),
+                        duration: 3 + idx * 0.3,
+                        yoyo: true,
+                        repeat: -1,
+                        ease: "sine.inOut",
+                        delay: wideSpreadDelay + 2
+                    });
+                });
+
+                // Clear UI and 3D Scene (keep 3D visible in background)
+                gsap.to(['#ui-layer', '.countdown-box', '.scene-indicator', '.hud', '.timer-line'], { opacity: 0, duration: 1.5, ease: "power2.inOut" });
+                gsap.to('#canvas-container', { opacity: 0.4, duration: 1.5, ease: "power2.inOut" });
+
+                // Final Book Closing Sequence (delayed for stack + spread + viewing)
+                const totalGalleryDelay = PHOTO_STACK_TIME + PHOTO_SPREAD_TIME;
+                const masterTl = gsap.timeline({ delay: totalGalleryDelay });
 
                 masterTl.set(overlay, { visibility: 'visible' })
                     .add(() => {
                         tlTextL.innerText = "The End";
                         tlTextR.innerText = "of the Story";
                     })
+                    // Fade out gallery photos
+                    .to('.finale-photo', { opacity: 0, y: '-=50', scale: 0.8, duration: 1.5, stagger: 0.1, ease: "power2.in" }, 0)
                     // Close the pages
-                    .fromTo(bL, { x: "-100%", rotateY: -90 }, { x: "0%", rotateY: 0, duration: 2.2, ease: "power4.inOut" })
-                    .fromTo(bR, { x: "100%", rotateY: 90 }, { x: "0%", rotateY: 0, duration: 2.2, ease: "power4.inOut" }, 0)
-                    .to(['#book-spine', '#book-clasp', '#book-ribbon', '#book-spine-glow'], { opacity: 1, duration: 1.5 }, 0.5)
+                    .fromTo(bL, { x: "-100%", rotateY: -90 }, { x: "0%", rotateY: 0, duration: 2.2, ease: "power4.inOut" }, 1)
+                    .fromTo(bR, { x: "100%", rotateY: 90 }, { x: "0%", rotateY: 0, duration: 2.2, ease: "power4.inOut" }, 1)
+                    .to(['#book-spine', '#book-clasp', '#book-ribbon', '#book-spine-glow'], { opacity: 1, duration: 1.5 }, 1.5)
+                    .to('#canvas-container', { opacity: 0, duration: 1.5 }, 2)
 
                     // The MAGIC MOMENT - exactly as the book snaps shut
                     .add(() => {
                         // Impact Flash
                         gsap.to(flash, { opacity: 0.8, duration: 0.1, yoyo: true, repeat: 1 });
                         emitFinaleMagic();
-                    }, 1.8)
+                        // Clean up gallery
+                        galleryContainer.remove();
+                    }, 2.8)
 
-                    .to(finale, { opacity: 1, y: -20, duration: 2, ease: "back.out(1.7)" }, 2.0)
-                    .to([tlTextL, tlTextR], { opacity: 0, duration: 1 }, 1.5);
+                    .to(finale, { opacity: 1, y: -20, duration: 2, ease: "back.out(1.7)" }, 3.0)
+                    .to([tlTextL, tlTextR], { opacity: 0, duration: 1 }, 2.5);
             }
 
             function prepareSceneEnvironment(data) {
@@ -3605,7 +3924,7 @@
                             ease: "back.out(1.5)",
                             onStart: () => {
                                 gsap.delayedCall(0.3, revealText);
-                                startChapterTimer();
+                                // startChapterTimer moved to nextScene for global sync
                                 // More sparkles as gift emerges
                                 const rect = photoCont.getBoundingClientRect();
                                 emitSparkles(rect.left + rect.width / 2, rect.top + rect.height / 2, 20);
@@ -3634,7 +3953,14 @@
                             filter: "blur(0px) brightness(1)",
                             duration: 2.5,
                             ease: "power2.out"
-                        }, "-=1.8");
+                        }, "-=1.8")
+                        .add(() => {
+                            // Delay DECOS for Scene 1 until after photo reveal starts
+                            [1, 2, 3].forEach((n, i) => {
+                                const d = document.getElementById(`deco-${n}`);
+                                gsap.to(d, { scale: 1.2, opacity: 1, duration: 0.8, ease: "back.out(2)", delay: i * 0.2 });
+                            });
+                        });
 
                 } else {
                     // --- CINEMATIC REVEAL FOR SUBSEQUENT SCENES ---
@@ -3661,9 +3987,12 @@
                             const rect = photoCont.getBoundingClientRect();
                             emitSparkles(rect.left + rect.width / 2, rect.top + rect.height / 2, 10);
                             revealText();
-                            startChapterTimer();
-                        }
+                        },
+                        delay: OTHER_DELAY
                     });
+
+                    // Start timer immediately at scene start (to include the 2s delay)
+                    startChapterTimer(SCENE_DURATION + OTHER_DELAY);
 
                     gsap.to(photoImg, {
                         filter: "blur(0px) brightness(1)",
@@ -3696,12 +4025,17 @@
                 // Subtle bobbing (separate from entrance)
                 gsap.to(photoBox, { y: -15, duration: 4.5, yoyo: true, repeat: -1, ease: "sine.inOut", delay: 3 });
 
-                // DECOS
+                // DECOS logic handled insidereveal animations
                 [1, 2, 3].forEach((n, i) => {
                     const d = document.getElementById(`deco-${n}`); d.innerText = data.decos[i];
                     gsap.killTweensOf(d);
                     gsap.set(d, { scale: 0, opacity: 0, rotation: -45 });
-                    gsap.to(d, { scale: 1.2, opacity: 1, delay: 0.5 + i * 0.2, duration: 0.8, ease: "back.out(2)" });
+
+                    if (sceneIdx > 0) {
+                        // Delay for Subsequent Scenes
+                        gsap.to(d, { scale: 1.2, opacity: 1, delay: OTHER_DELAY + i * 0.2, duration: 0.8, ease: "back.out(2)" });
+                    }
+
                     gsap.to(d, { rotation: (i % 2 === 0 ? 15 : -15), duration: 2.5 + i, yoyo: true, repeat: -1, ease: "sine.inOut", delay: 1.5 });
                     gsap.to(d, { y: "-=10", duration: 3, yoyo: true, repeat: -1, ease: "sine.inOut", delay: 0.5 + i * 0.5 });
                 });
@@ -3762,7 +4096,10 @@
             const startShow = () => {
                 const btn = document.getElementById('go-btn');
                 btn.style.pointerEvents = 'none'; // Prevent double click
-                document.getElementById('bgm').play().catch(() => { });
+
+                const bgm = document.getElementById('bgm');
+                bgm.currentTime = 0; // Reset to start
+                bgm.play().catch(() => { });
 
                 const tlOpen = gsap.timeline();
 
@@ -3824,18 +4161,24 @@
             }
 
             // Seal Button Click Handler
-            document.getElementById('go-btn').onclick = (e) => {
+            document.getElementById('go-btn').addEventListener('click', (e) => {
                 const keypad = document.getElementById('magic-keypad');
 
                 if (isLocked) {
                     e.stopPropagation();
+                    // Play music on interaction (unlocks audio)
+                    document.getElementById('bgm').play().catch(() => { });
+
                     // Show Keypad
-                    gsap.to(keypad, { display: 'block', opacity: 1, duration: 0.5 });
-                    gsap.to('.play-btn', { scale: 0.8, opacity: 0.5, duration: 0.5 });
+                    gsap.to(keypad, { display: 'block', opacity: 1, duration: 0.5, y: -20, ease: "back.out(1.7)" });
+                    gsap.to('.play-btn', { scale: 0.85, opacity: 0.6, duration: 0.5 });
+
+                    const statusEl = document.getElementById('keypad-status');
+                    if (statusEl) statusEl.innerText = "Enter the 10-icon combo";
                 } else {
                     startShow();
                 }
-            };
+            });
 
             // Keypad Logic
             let enteredCode = [];
@@ -3847,7 +4190,7 @@
                     enteredCode.push(icon);
                     document.getElementById('keypad-display').innerText += emoji;
 
-                    if (enteredCode.length === 3) {
+                    if (enteredCode.length === 10) {
                         checkPassword(enteredCode.join(','));
                     }
                 };
@@ -3886,12 +4229,39 @@
                                 });
                             }
 
-                            setTimeout(() => {
-                                isLocked = false;
-                                document.getElementById('magic-keypad').style.display = 'none';
-                                gsap.to('.play-btn', { scale: 1, opacity: 1, duration: 0.5 });
-                                startShow();
-                            }, 1000);
+                            // Fetch and Update Message content
+                            if (data.message_file) {
+                                fetch(`${staticBase}${data.message_file}`)
+                                    .then(res => res.ok ? res.text() : null)
+                                    .then(text => {
+                                        if (text) updateScriptWithContent(text);
+
+                                        // Proceed to animation after content update
+                                        setTimeout(() => {
+                                            isLocked = false;
+                                            document.getElementById('magic-keypad').style.display = 'none';
+                                            gsap.to('.play-btn', { scale: 1, opacity: 1, duration: 0.5 });
+                                            startShow();
+                                        }, 1000);
+                                    })
+                                    .catch(err => {
+                                        console.error("Delayed message fetch failed:", err);
+                                        // Fallback: Proceed anyway
+                                        setTimeout(() => {
+                                            isLocked = false;
+                                            document.getElementById('magic-keypad').style.display = 'none';
+                                            gsap.to('.play-btn', { scale: 1, opacity: 1, duration: 0.5 });
+                                            startShow();
+                                        }, 1000);
+                                    });
+                            } else {
+                                setTimeout(() => {
+                                    isLocked = false;
+                                    document.getElementById('magic-keypad').style.display = 'none';
+                                    gsap.to('.play-btn', { scale: 1, opacity: 1, duration: 0.5 });
+                                    startShow();
+                                }, 1000);
+                            }
 
                         } else {
                             statusEl.innerText = "Wrong Magic ✨";
@@ -4203,6 +4573,13 @@
                 s.style.animationDuration = (Math.random() * 5 + 10) + 's';
                 introContainer.appendChild(s);
             }
+
+            // Try to play BGM immediately on load (Autoplay check)
+            window.addEventListener('load', () => {
+                document.getElementById('bgm').play().catch(() => {
+                    console.log("Autoplay blocked. Waiting for interaction.");
+                });
+            });
 
             // Unlock audio on interaction
             // Unlock audio on interaction
