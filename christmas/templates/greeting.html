@@ -1781,12 +1781,18 @@
             }
 
             const SCENE_DURATION = 20;
-            const SCENE_1_DELAY = 5;
-            const OTHER_DELAY = 3;
-            const PHOTO_STACK_TIME = 2; // Time for photos to stack in center
-            const PHOTO_SPREAD_TIME = 5; // Time to view floating photos spread
-            const FINALE_CLOSE_TIME = 3; // Time for book closing animation
-            const TOTAL_TIME = (SCENE_DURATION * script.length) + SCENE_1_DELAY + (OTHER_DELAY * (script.length - 1)) + PHOTO_STACK_TIME + PHOTO_SPREAD_TIME + FINALE_CLOSE_TIME;
+            const SCENE_1_DELAY = 7; // Increased by 2s as requested
+            const OTHER_DELAY = 5;   // Increased from 3s to 5s
+            const PHOTO_VIEW_TIME = 2; // Initial spread view time
+            const PHOTO_SPREAD_TIME = 5; // Wide spread view time
+            const FINALE_CLOSE_TIME = 3; // Book close animation time
+            const YEAR_END_CUTSCENE_TIME = 22; // ~22s for the year-end review (months + farewell + 2026 welcome)
+
+            // Total time includes scenes, delays, and all finale phases
+            // Finale phases: Spread(2s) + Wide(5s) + Disappear(6s) + YearEnd(22s) + Close(3s) + buffer
+            const FINALE_DISAPPEAR_TIME = 6;
+            const TOTAL_TIME = (SCENE_DURATION * script.length) + SCENE_1_DELAY + (OTHER_DELAY * (script.length - 1)) +
+                PHOTO_VIEW_TIME + PHOTO_SPREAD_TIME + FINALE_DISAPPEAR_TIME + YEAR_END_CUTSCENE_TIME + FINALE_CLOSE_TIME + 5; // +5 for animation transitions
             let timeRemaining = TOTAL_TIME, countdownInterval = null;
             let appState = { idx: -1, isPlaying: false };
             // Declare as window properties to ensure global accessibility and fix ReferenceError
@@ -3676,7 +3682,7 @@
                 });
 
                 // Phase 2: After initial spread, spread even WIDER across entire canvas
-                const wideSpreadDelay = PHOTO_STACK_TIME; // After initial viewing
+                const wideSpreadDelay = PHOTO_VIEW_TIME; // After initial viewing
 
                 // Generate wider positions (spread across entire screen)
                 const widePositions = [];
@@ -3722,22 +3728,274 @@
                 gsap.to(['#ui-layer', '.countdown-box', '.scene-indicator', '.hud', '.timer-line'], { opacity: 0, duration: 1.5, ease: "power2.inOut" });
                 gsap.to('#canvas-container', { opacity: 0.4, duration: 1.5, ease: "power2.inOut" });
 
-                // Final Book Closing Sequence (delayed for stack + spread + viewing)
-                const totalGalleryDelay = PHOTO_STACK_TIME + PHOTO_SPREAD_TIME;
-                const masterTl = gsap.timeline({ delay: totalGalleryDelay });
+                // Final Book Closing Sequence
+                // Calculate starts: 
+                // Initial Spread (0s) -> View (1.5s) -> Wide Spread (3.5s) -> View (5s) -> Disappear (10s)
+                const startDisappear = PHOTO_VIEW_TIME + PHOTO_SPREAD_TIME + 3; // 3s for entrance animations
+                const masterTl = gsap.timeline({ delay: startDisappear });
+
+                // Create the Year-End Cutscene Container
+                const yearEndContainer = document.createElement('div');
+                yearEndContainer.id = 'year-end-cutscene';
+                yearEndContainer.style.cssText = `
+                    position: fixed;
+                    top: 0; left: 0;
+                    width: 100%; height: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 2500;
+                    pointer-events: none;
+                    opacity: 0;
+                    background: radial-gradient(ellipse at center, rgba(15, 25, 60, 0.9) 0%, rgba(5, 10, 30, 0.95) 100%);
+                `;
+                document.body.appendChild(yearEndContainer);
+
+                // Month display element with 3D perspective for flip effect
+                const monthDisplay = document.createElement('div');
+                monthDisplay.style.cssText = `
+                    font-family: 'Pacifico', cursive;
+                    font-size: 4rem;
+                    color: #ffd700;
+                    text-shadow: 0 0 30px rgba(255, 215, 0, 0.5), 0 0 60px rgba(255, 215, 0, 0.3);
+                    margin-bottom: 20px;
+                    transform-style: preserve-3d;
+                    perspective: 800px;
+                `;
+                yearEndContainer.appendChild(monthDisplay);
+
+                // Year display element - NO Y rotation to prevent reversed text
+                const yearDisplay = document.createElement('div');
+                yearDisplay.style.cssText = `
+                    font-family: 'Fredoka', sans-serif;
+                    font-size: 8rem;
+                    font-weight: 700;
+                    color: #fff;
+                    text-shadow: 0 0 50px rgba(255, 255, 255, 0.5), 0 0 100px rgba(255, 215, 0, 0.3);
+                    opacity: 0;
+                `;
+                yearDisplay.innerText = '2025';
+                yearEndContainer.appendChild(yearDisplay);
+
+                // Message display
+                const yearMessage = document.createElement('div');
+                yearMessage.style.cssText = `
+                    font-family: 'Pacifico', cursive;
+                    font-size: 1.8rem;
+                    color: #ffb6c1;
+                    text-shadow: 0 0 20px rgba(255, 182, 193, 0.5);
+                    margin-top: 30px;
+                    opacity: 0;
+                    text-align: center;
+                    max-width: 80%;
+                    line-height: 1.6;
+                `;
+                yearEndContainer.appendChild(yearMessage);
+
+                const months = [
+                    'January ❄️', 'February 💕', 'March 🌸', 'April 🌧️',
+                    'May 🌺', 'June ☀️', 'July 🎆', 'August 🏖️',
+                    'September 🍂', 'October 🎃', 'November 🍁', 'December 🎄'
+                ];
 
                 masterTl.set(overlay, { visibility: 'visible' })
                     .add(() => {
                         tlTextL.innerText = "The End";
                         tlTextR.innerText = "of the Story";
                     })
-                    // Fade out gallery photos
-                    .to('.finale-photo', { opacity: 0, y: '-=50', scale: 0.8, duration: 1.5, stagger: 0.1, ease: "power2.in" }, 0)
+                    // Phase 3: Transition - each disappears 1 by 1 with 1s interval (starting from front/last scene)
+                    .to('.finale-photo', {
+                        opacity: 0,
+                        y: '-=100',
+                        scale: 0.5,
+                        duration: 1.5,
+                        stagger: {
+                            each: 1.0,
+                            from: "end"
+                        },
+                        ease: "power2.in"
+                    }, 0)
+
+                    // Phase 4: Year-End Cutscene (starts at 6s)
+                    .to(yearEndContainer, { opacity: 1, duration: 1.5 }, 6)
+                    // 2025 entrance - scale only, NO rotation
+                    .fromTo(yearDisplay,
+                        { opacity: 0, scale: 0.3 },
+                        { opacity: 1, scale: 1, duration: 1.5, ease: "elastic.out(1, 0.5)" }, 6.5)
+                    // Pulsing glow on 2025
+                    .to(yearDisplay, {
+                        textShadow: '0 0 80px rgba(255, 255, 255, 0.9), 0 0 150px rgba(255, 215, 0, 0.7)',
+                        duration: 0.7,
+                        yoyo: true,
+                        repeat: 2,
+                        ease: "sine.inOut"
+                    }, 7.5)
+
+                    // Animate through months with CALENDAR FLIP effect
+                    .add(() => {
+                        let monthIdx = 0;
+
+                        // Show first month immediately
+                        const showMonth = () => {
+                            if (monthIdx >= months.length) return;
+
+                            const isDecember = monthIdx === 11;
+
+                            // Calendar page flip animation
+                            gsap.fromTo(monthDisplay,
+                                {
+                                    opacity: 0,
+                                    rotationX: -90,
+                                    y: -30,
+                                    scale: 0.8
+                                },
+                                {
+                                    opacity: 1,
+                                    rotationX: 0,
+                                    y: 0,
+                                    scale: isDecember ? 1.3 : 1,
+                                    duration: 0.5,
+                                    ease: "back.out(1.5)",
+                                    onStart: () => {
+                                        monthDisplay.innerText = months[monthIdx];
+                                        // Special glow for December
+                                        if (isDecember) {
+                                            monthDisplay.style.color = '#ff6b6b';
+                                            monthDisplay.style.textShadow = '0 0 50px rgba(255, 107, 107, 0.8), 0 0 100px rgba(255, 215, 0, 0.6)';
+                                        }
+                                    }
+                                }
+                            );
+
+                            // Cancel/strikethrough effect (except December)
+                            if (!isDecember) {
+                                // Add strikethrough line animation
+                                gsap.to(monthDisplay, {
+                                    textDecoration: 'line-through',
+                                    color: '#666',
+                                    textShadow: 'none',
+                                    scale: 0.9,
+                                    delay: 0.4,
+                                    duration: 0.2,
+                                    ease: "power2.in"
+                                });
+                                // Then fade out
+                                gsap.to(monthDisplay, {
+                                    opacity: 0,
+                                    y: 30,
+                                    delay: 0.55,
+                                    duration: 0.25,
+                                    ease: "power2.in",
+                                    onComplete: () => {
+                                        monthDisplay.style.textDecoration = 'none';
+                                        monthDisplay.style.color = '#ffd700';
+                                        monthDisplay.style.textShadow = '0 0 30px rgba(255, 215, 0, 0.5), 0 0 60px rgba(255, 215, 0, 0.3)';
+                                    }
+                                });
+                            } else {
+                                // December special celebration - BIGGER
+                                gsap.to(monthDisplay, {
+                                    scale: 1.8,
+                                    duration: 1,
+                                    delay: 0.5,
+                                    ease: "elastic.out(1, 0.4)"
+                                });
+                                // Multiple sparkle bursts for December
+                                setTimeout(() => {
+                                    const rect = monthDisplay.getBoundingClientRect();
+                                    emitSparkles(rect.left + rect.width / 2, rect.top + rect.height / 2, 45);
+                                    setTimeout(() => emitSparkles(rect.left + 50, rect.top + 20, 25), 200);
+                                    setTimeout(() => emitSparkles(rect.right - 50, rect.top + 20, 25), 400);
+                                }, 400);
+                            }
+                        };
+
+                        // Show January immediately
+                        showMonth();
+
+                        // Continue with February onwards
+                        const monthInterval = setInterval(() => {
+                            monthIdx++;
+                            if (monthIdx >= months.length) {
+                                clearInterval(monthInterval);
+                                return;
+                            }
+                            showMonth();
+                        }, 700);
+                    }, 7.5)
+
+                    // After months complete, fade December and show farewell
+                    .add(() => {
+                        gsap.to(monthDisplay, { opacity: 0, scale: 0.5, duration: 0.8, ease: "power2.in" });
+                        yearMessage.innerText = '✨ Thank you for the memories ✨';
+                        gsap.fromTo(yearMessage,
+                            { opacity: 0, y: 20 },
+                            { opacity: 1, y: 0, duration: 1.2, ease: "power2.out" }
+                        );
+                    }, 16.5)
+
+                    // Transition 2025 out - fade and scale only, NO rotation
+                    .to(yearDisplay, {
+                        opacity: 0,
+                        scale: 0.1,
+                        filter: 'blur(10px)',
+                        duration: 1.2,
+                        ease: "power3.in"
+                    }, 18.5)
+                    .to(yearMessage, { opacity: 0, duration: 0.5 }, 19)
+
+                    // 2026 EXPLOSIVE ENTRANCE - Firework style!
+                    .add(() => {
+                        yearDisplay.innerText = '2026';
+                        yearDisplay.style.color = '#ffd700';
+                        yearDisplay.style.filter = 'blur(0px)';
+                        yearDisplay.style.textShadow = '0 0 80px rgba(255, 215, 0, 1), 0 0 150px rgba(255, 107, 107, 0.8)';
+                        yearMessage.innerText = '🎆 A new chapter begins! 🎆';
+
+                        // Multiple firework-style sparkle bursts
+                        const cx = window.innerWidth / 2;
+                        const cy = window.innerHeight / 2;
+                        emitSparkles(cx, cy, 60);
+                        setTimeout(() => emitSparkles(cx - 100, cy - 50, 30), 150);
+                        setTimeout(() => emitSparkles(cx + 100, cy - 50, 30), 300);
+                        setTimeout(() => emitSparkles(cx, cy - 100, 40), 450);
+                    }, 19.8)
+                    .fromTo(yearDisplay,
+                        { opacity: 0, scale: 0 },
+                        {
+                            opacity: 1,
+                            scale: 1.5,
+                            duration: 1.8,
+                            ease: "elastic.out(1, 0.3)"
+                        }, 20)
+                    .to(yearDisplay, { scale: 1.2, duration: 0.6, ease: "power2.out" }, 22)
+                    .fromTo(yearMessage,
+                        { opacity: 0, scale: 0.8 },
+                        { opacity: 1, scale: 1, duration: 1, ease: "back.out(1.5)" }, 21)
+
+                    // Celebratory pulse on 2026
+                    .to(yearDisplay, {
+                        scale: 1.35,
+                        textShadow: '0 0 100px rgba(255, 215, 0, 1), 0 0 200px rgba(255, 107, 107, 1)',
+                        duration: 0.5,
+                        yoyo: true,
+                        repeat: 3,
+                        ease: "power2.inOut"
+                    }, 23)
+
+                    // Hold for a moment
+                    .to({}, { duration: 1 }, 24)
+
+                    // Fade out year-end cutscene
+                    .to(yearEndContainer, { opacity: 0, duration: 1.5 }, 24)
+                    .add(() => { yearEndContainer.remove(); }, 25.5)
+
                     // Close the pages
-                    .fromTo(bL, { x: "-100%", rotateY: -90 }, { x: "0%", rotateY: 0, duration: 2.2, ease: "power4.inOut" }, 1)
-                    .fromTo(bR, { x: "100%", rotateY: 90 }, { x: "0%", rotateY: 0, duration: 2.2, ease: "power4.inOut" }, 1)
-                    .to(['#book-spine', '#book-clasp', '#book-ribbon', '#book-spine-glow'], { opacity: 1, duration: 1.5 }, 1.5)
-                    .to('#canvas-container', { opacity: 0, duration: 1.5 }, 2)
+                    .fromTo(bL, { x: "-100%", rotateY: -90 }, { x: "0%", rotateY: 0, duration: 2.2, ease: "power4.inOut" }, 25)
+                    .fromTo(bR, { x: "100%", rotateY: 90 }, { x: "0%", rotateY: 0, duration: 2.2, ease: "power4.inOut" }, 25)
+                    .to(['#book-spine', '#book-clasp', '#book-ribbon', '#book-spine-glow'], { opacity: 1, duration: 1.5 }, 25.5)
+                    .to('#canvas-container', { opacity: 0, duration: 1.5 }, 26)
 
                     // The MAGIC MOMENT - exactly as the book snaps shut
                     .add(() => {
@@ -3746,10 +4004,99 @@
                         emitFinaleMagic();
                         // Clean up gallery
                         galleryContainer.remove();
-                    }, 2.8)
+                    }, 27)
 
-                    .to(finale, { opacity: 1, y: -20, duration: 2, ease: "back.out(1.7)" }, 3.0)
-                    .to([tlTextL, tlTextR], { opacity: 0, duration: 1 }, 2.5);
+                    .to(finale, { opacity: 1, y: -20, duration: 2, ease: "back.out(1.7)" }, 27.2)
+                    .to([tlTextL, tlTextR], { opacity: 0, duration: 1 }, 26.8)
+
+                    // Show extravagant "To/From" signature with typewriter effect
+                    .add(() => {
+                        // Get the actual recipient name from script data
+                        const actualName = script[0]?.name || recipientName || 'Friend';
+
+                        // Create signature container
+                        const sigContainer = document.createElement('div');
+                        sigContainer.id = 'finale-signature';
+                        sigContainer.style.cssText = `
+                            position: fixed;
+                            bottom: 12%;
+                            left: 50%;
+                            transform: translateX(-50%);
+                            text-align: center;
+                            z-index: 3000;
+                        `;
+                        document.body.appendChild(sigContainer);
+
+                        // "To:" line
+                        const toLine = document.createElement('div');
+                        toLine.style.cssText = `
+                            font-family: 'Pacifico', cursive;
+                            font-size: 1.6rem;
+                            color: #87ceeb;
+                            text-shadow: 0 0 20px rgba(135, 206, 235, 0.5);
+                            margin-bottom: 15px;
+                            min-height: 2rem;
+                        `;
+                        sigContainer.appendChild(toLine);
+
+                        // "From:" line
+                        const fromLine = document.createElement('div');
+                        fromLine.style.cssText = `
+                            font-family: 'Pacifico', cursive;
+                            font-size: 2.2rem;
+                            color: #ffd700;
+                            text-shadow: 0 0 30px rgba(255, 215, 0, 0.6), 0 0 60px rgba(255, 215, 0, 0.3);
+                            min-height: 2.5rem;
+                        `;
+                        sigContainer.appendChild(fromLine);
+
+                        // Typewriter function
+                        const typeWriter = (element, text, speed = 80) => {
+                            return new Promise(resolve => {
+                                let i = 0;
+                                const timer = setInterval(() => {
+                                    if (i < text.length) {
+                                        element.innerText += text.charAt(i);
+                                        i++;
+                                    } else {
+                                        clearInterval(timer);
+                                        resolve();
+                                    }
+                                }, speed);
+                            });
+                        };
+
+                        // Start typewriter sequence
+                        const toText = 'To: ' + actualName + ' 🎄';
+                        const fromText = 'From: Joseph ✨';
+
+                        // Type "To:" first
+                        typeWriter(toLine, toText, 100).then(() => {
+                            // Small pause then type "From:"
+                            setTimeout(() => {
+                                typeWriter(fromLine, fromText, 90).then(() => {
+                                    // Sparkles after typing complete
+                                    setTimeout(() => {
+                                        const rect = sigContainer.getBoundingClientRect();
+                                        emitSparkles(rect.left + rect.width / 2, rect.top, 30);
+                                        setTimeout(() => emitSparkles(rect.left + 40, rect.top + 30, 20), 300);
+                                        setTimeout(() => emitSparkles(rect.right - 40, rect.top + 30, 20), 600);
+                                    }, 500);
+
+                                    // Gentle glow pulse on From line
+                                    gsap.to(fromLine, {
+                                        scale: 1.1,
+                                        textShadow: '0 0 50px rgba(255, 215, 0, 1), 0 0 100px rgba(255, 215, 0, 0.6)',
+                                        duration: 0.8,
+                                        delay: 1,
+                                        yoyo: true,
+                                        repeat: 2,
+                                        ease: "sine.inOut"
+                                    });
+                                });
+                            }, 500);
+                        });
+                    }, 30);
             }
 
             function prepareSceneEnvironment(data) {
@@ -3991,7 +4338,7 @@
                         delay: OTHER_DELAY
                     });
 
-                    // Start timer immediately at scene start (to include the 2s delay)
+                    // Start timer immediately at scene start
                     startChapterTimer(SCENE_DURATION + OTHER_DELAY);
 
                     gsap.to(photoImg, {
