@@ -4096,7 +4096,74 @@
                                 });
                             }, 500);
                         });
-                    }, 30);
+                    }, 30)
+
+                    // "THE END" Screen with typewriter effect
+                    .add(() => {
+                        // Create "The End" overlay
+                        const theEndOverlay = document.createElement('div');
+                        theEndOverlay.id = 'the-end-overlay';
+                        theEndOverlay.style.cssText = `
+                            position: fixed;
+                            top: 0; left: 0;
+                            width: 100%; height: 100%;
+                            background: #000;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            z-index: 9999;
+                            opacity: 0;
+                        `;
+                        document.body.appendChild(theEndOverlay);
+
+                        const theEndText = document.createElement('div');
+                        theEndText.style.cssText = `
+                            font-family: 'Pacifico', cursive;
+                            font-size: 4rem;
+                            color: #fff;
+                            text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+                            letter-spacing: 0.3em;
+                        `;
+                        theEndOverlay.appendChild(theEndText);
+
+                        // Fade in black overlay
+                        gsap.to(theEndOverlay, {
+                            opacity: 1,
+                            duration: 2,
+                            ease: "power2.inOut",
+                            onComplete: () => {
+                                // Typewriter for "The End"
+                                const endMessage = "The End";
+                                let charIdx = 0;
+                                const typeInterval = setInterval(() => {
+                                    if (charIdx < endMessage.length) {
+                                        theEndText.innerText += endMessage.charAt(charIdx);
+                                        charIdx++;
+                                    } else {
+                                        clearInterval(typeInterval);
+
+                                        // Add subtle glow after typing
+                                        gsap.to(theEndText, {
+                                            textShadow: '0 0 50px rgba(255, 255, 255, 0.6), 0 0 100px rgba(255, 255, 255, 0.3)',
+                                            duration: 1.5,
+                                            yoyo: true,
+                                            repeat: 1,
+                                            ease: "sine.inOut"
+                                        });
+
+                                        // Final fade to complete black
+                                        setTimeout(() => {
+                                            gsap.to(theEndText, {
+                                                opacity: 0,
+                                                duration: 2,
+                                                ease: "power2.inOut"
+                                            });
+                                        }, 4000);
+                                    }
+                                }, 200);
+                            }
+                        });
+                    }, 40);
             }
 
             function prepareSceneEnvironment(data) {
