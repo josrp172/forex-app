@@ -2114,7 +2114,7 @@
             }
 
             if (messageFile && messageFile !== 'None' && messageFile.length > 0) {
-                fetch(`${staticBase}${messageFile}`)
+                fetch(`${staticBase}${messageFile}?v=${new Date().getTime()}`)
                     .then(res => res.ok ? res.text() : null)
                     .then(text => updateScriptWithContent(text))
                     .catch(e => console.error("Error loading custom message:", e));
