@@ -4772,6 +4772,19 @@
                     }, 40);
             }
 
+            function createGround() {
+                const geo = new THREE.PlaneGeometry(120, 120, 80, 80);
+                const pos = geo.attributes.position.array;
+                for (let i = 2; i < pos.length; i += 3) pos[i] += Math.random() * 0.2 - 0.1;
+                geo.computeVertexNormals();
+                const mat = new THREE.MeshStandardMaterial({ color: 0xf8f8ff, roughness: 0.95 });
+                const ground = new THREE.Mesh(geo, mat);
+                ground.rotation.x = -Math.PI / 2;
+                ground.position.y = -3;
+                ground.receiveShadow = true;
+                scene.add(ground);
+            }
+
             function prepareSceneEnvironment(data) {
                 document.body.style.background = data.bg;
                 if (scene.fog) scene.fog.color.set(data.bg);
@@ -4958,7 +4971,7 @@
                             duration: 1.2,
                             ease: "back.out(1.5)",
                             onStart: () => {
-                                gsap.delayedCall(0.3, revealText);
+                                gsap.delayedCall(2.3, revealText);
                                 // startChapterTimer moved to nextScene for global sync
                                 // More sparkles as gift emerges
                                 const rect = photoCont.getBoundingClientRect();
