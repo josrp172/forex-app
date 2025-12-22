@@ -421,9 +421,11 @@
             position: absolute;
             font-size: 3.5rem;
             filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.4));
-            z-index: 10;
+            z-index: 100;
+            /* Brought to front */
             opacity: 0;
-            transform: scale(0);
+            transform: scale(0) translateZ(50px);
+            /* Ensure it sits above 3D elements */
         }
 
         /* ============ GLASS-MORPHISM MESSAGE PANEL ============ */
@@ -1329,6 +1331,344 @@
             font-weight: 700;
             text-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
         }
+
+        /* ============ RESPONSIVE & LAPTOP/TABLET OPTIMIZATIONS ============ */
+        @media screen and (max-height: 900px) {
+
+            /* Compact layout for laptops */
+            .photo-stage {
+                margin-bottom: 30px;
+                /* Reduced from 80px */
+                transform: scale(0.85);
+                /* Scale down the gift/photo area */
+            }
+
+            .text-wrap {
+                padding: 30px 45px;
+                /* Reduced padding */
+                min-width: 380px;
+                gap: 10px;
+            }
+
+            .main-msg {
+                font-size: 2rem;
+                /* Smaller text */
+                min-height: 2.4rem;
+            }
+
+            .sub-msg {
+                font-size: 1rem;
+                min-height: 1.4rem;
+            }
+
+            /* Fix Icon Positioning on smaller screens - keep them visible */
+            .deco {
+                transform: scale(0.8) !important;
+            }
+
+            #deco-1 {
+                top: -20px !important;
+                left: -20px !important;
+            }
+
+            #deco-2 {
+                top: -20px !important;
+                right: -20px !important;
+            }
+
+            /* Prevent Book Cover Title Overlap */
+            #book-cover-title .shimmer-text {
+                font-size: 2.8rem !important;
+            }
+
+            #book-cover-title {
+                top: 12% !important;
+            }
+
+            /* Fix Finale Message Overlap */
+            #finale-msg h1 {
+                font-size: 3.5rem !important;
+                margin-bottom: 0 !important;
+            }
+
+            #finale-msg p {
+                font-size: 1.8rem !important;
+                margin-top: 10px !important;
+            }
+        }
+
+        @media screen and (max-width: 1366px) {
+
+            /* Standard Laptops */
+            .photo-stage {
+                transform: scale(0.8);
+            }
+
+            .cinematic-title {
+                font-size: 3.5rem !important;
+            }
+        }
+
+        @media screen and (max-width: 1024px) {
+
+            /* Tablet/Smaller Screens */
+            .photo-stage {
+                transform: scale(0.7);
+                margin-bottom: 20px;
+            }
+
+            .text-wrap {
+                min-width: 300px;
+                padding: 20px 30px;
+                max-width: 90%;
+            }
+
+            .main-msg {
+                font-size: 1.6rem;
+            }
+
+            .sub-msg {
+                font-size: 0.9rem;
+            }
+
+            /* Tighten Icons further for Tablets */
+            #deco-1 {
+                top: -10px !important;
+                left: -10px !important;
+            }
+
+            #deco-2 {
+                top: -10px !important;
+                right: -10px !important;
+            }
+
+            /* Ensure UI fits */
+            #ui-layer {
+                justify-content: center;
+                /* Keep centered */
+                overflow-y: hidden;
+            }
+
+            #finale-msg h1 {
+                font-size: 2.5rem !important;
+            }
+
+            #finale-msg p {
+                font-size: 1.4rem !important;
+            }
+        }
+
+        /* Landscape on mobile/small tablets often has very little height */
+        @media screen and (max-height: 600px) {
+            .photo-stage {
+                transform: scale(0.55);
+                margin-bottom: 5px;
+            }
+
+            .text-wrap {
+                padding: 10px 25px;
+                gap: 5px;
+                min-width: 280px;
+            }
+
+            .main-msg {
+                font-size: 1.4rem;
+                min-height: 1.8rem;
+            }
+
+            .sub-msg {
+                font-size: 0.85rem;
+            }
+
+            .cinematic-title {
+                font-size: 2.5rem !important;
+            }
+
+            .cinematic-sub {
+                margin-bottom: 0.5rem !important;
+            }
+        }
+
+        /* ============ FIXED RESPONSIVE (OVERRIDES) ============ */
+        @media screen and (max-height: 900px) {
+
+            /* Compact layout for laptops */
+            .photo-stage {
+                margin-bottom: 30px;
+                transform: scale(0.85);
+            }
+
+            .text-wrap {
+                padding: 30px 45px;
+                min-width: 380px;
+                gap: 10px;
+            }
+
+            .main-msg {
+                font-size: 2rem;
+                min-height: 2.4rem;
+            }
+
+            .sub-msg {
+                font-size: 1rem;
+                min-height: 1.4rem;
+            }
+
+            /* Fix Icon Positioning */
+            .deco {
+                transform: scale(0.8) translateZ(50px) !important;
+            }
+
+            #deco-1 {
+                top: -20px !important;
+                left: -20px !important;
+            }
+
+            #deco-2 {
+                top: -20px !important;
+                right: -20px !important;
+            }
+
+            /* ============ TITLE OVERLAP FIXES ============ */
+            /* Book Cover Title - Move UP to avoid "Holiday Express" */
+            #book-cover-title {
+                top: calc(5% + 10px) !important;
+                /* Calculate safe top position */
+                width: 90% !important;
+                left: 5% !important;
+            }
+
+            #book-cover-title .shimmer-text {
+                font-size: 2.2rem !important;
+            }
+
+            #book-cover-title div:last-child {
+                font-size: 0.8rem !important;
+                letter-spacing: 4px !important;
+            }
+
+            /* Start Screen Title - Center but Smaller */
+            #start-overlay h1 {
+                font-size: 4.5rem !important;
+                margin-bottom: 5px !important;
+            }
+
+            .cinematic-sub {
+                font-size: 1.2rem !important;
+            }
+
+            /* Magic Keypad - Dynamic Scaling */
+            /* Magic Keypad - Dynamic Scaling (Fixed) */
+            #magic-keypad {
+                transform: translateX(-50%) scale(0.85) !important;
+                transform-origin: bottom center !important;
+                bottom: 15% !important;
+                /* Move up slightly */
+            }
+
+            /* Fix Finale Message Overlap */
+            #finale-msg h1 {
+                font-size: 3.5rem !important;
+                margin-bottom: 0 !important;
+            }
+
+            #finale-msg p {
+                font-size: 1.8rem !important;
+                margin-top: 10px !important;
+            }
+        }
+
+        @media screen and (max-width: 1366px) {
+            .photo-stage {
+                transform: scale(0.8);
+            }
+
+            #start-overlay h1 {
+                font-size: 4rem !important;
+            }
+        }
+
+        @media screen and (max-width: 1024px) {
+            .photo-stage {
+                transform: scale(0.7);
+                margin-bottom: 20px;
+            }
+
+            .text-wrap {
+                min-width: 300px;
+                padding: 20px 30px;
+                max-width: 90%;
+            }
+
+            .main-msg {
+                font-size: 1.6rem;
+            }
+
+            .sub-msg {
+                font-size: 0.9rem;
+            }
+
+            #deco-1 {
+                top: -10px !important;
+                left: -10px !important;
+            }
+
+            #deco-2 {
+                top: -10px !important;
+                right: -10px !important;
+            }
+
+            #magic-keypad {
+                transform: translateX(-50%) scale(0.75) !important;
+            }
+
+            #ui-layer {
+                justify-content: center;
+                overflow-y: hidden;
+            }
+
+            #finale-msg h1 {
+                font-size: 2.5rem !important;
+            }
+
+            #finale-msg p {
+                font-size: 1.4rem !important;
+            }
+        }
+
+        @media screen and (max-height: 600px) {
+            .photo-stage {
+                transform: scale(0.55);
+                margin-bottom: 5px;
+            }
+
+            .text-wrap {
+                padding: 10px 25px;
+                gap: 5px;
+                min-width: 280px;
+            }
+
+            .main-msg {
+                font-size: 1.4rem;
+                min-height: 1.8rem;
+            }
+
+            .sub-msg {
+                font-size: 0.85rem;
+            }
+
+            #book-cover-title {
+                top: 2% !important;
+            }
+
+            #start-overlay h1 {
+                font-size: 3rem !important;
+            }
+
+            #magic-keypad {
+                transform: translateX(-50%) scale(0.65) !important;
+            }
+        }
     </style>
 </head>
 
@@ -1781,7 +2121,7 @@
             }
 
             const SCENE_DURATION = 20;
-            const SCENE_1_DELAY = 7; // Increased by 2s as requested
+            const SCENE_1_DELAY = 12; // Increased by 5s as requested
             const OTHER_DELAY = 5;   // Increased from 3s to 5s
             const PHOTO_VIEW_TIME = 2; // Initial spread view time
             const PHOTO_SPREAD_TIME = 5; // Wide spread view time
@@ -1890,19 +2230,27 @@
                 element.innerHTML = '';
                 let i = 0;
 
+                // Cache container dimensions once to avoid layout thrashing
+                // This is an approximation for performance
+                let rect = element.getBoundingClientRect();
+
                 function type() {
                     if (i < text.length) {
                         const char = text.charAt(i);
+                        // Using textContent is much faster than innerHTML for plain text
+                        // But need innerHTML for structure? Here we just append chars.
+                        // We'll stick to innerHTML but optimize the sparkle trigger.
                         element.innerHTML += char;
 
-                        // Emit sparkles for non-space characters (every 2nd char to reduce particles)
-                        if (char !== ' ' && i % 2 === 0) {
-                            const rect = element.getBoundingClientRect();
-                            // Approximate position of the last character
-                            const charWidth = rect.width / Math.max(1, element.textContent.length);
-                            const x = rect.left + (i * charWidth * 0.8);
-                            const y = rect.top + rect.height / 2;
-                            emitSparkles(x, y, 2);
+                        // OPTIMIZATION: Emit sparkles less frequently (every 3 chars)
+                        // AND avoid getBoundingClientRect() inside the loop.
+                        if (char !== ' ' && i % 3 === 0) {
+                            // Estimate position based on random variance within the text box
+                            // This creates a "magical cloud" effect rather than precise cursor tracking
+                            // which is much more performant.
+                            const x = rect.left + Math.random() * rect.width;
+                            const y = rect.top + Math.random() * rect.height;
+                            emitSparkles(x, y, 1);
                         }
 
                         i++;
@@ -4719,6 +5067,15 @@
                                                 duration: 2,
                                                 ease: "power2.inOut",
                                                 onComplete: () => {
+                                                    // Automatically remove from fullscreen at the end
+                                                    if (document.fullscreenElement || document.webkitFullscreenElement) {
+                                                        if (document.exitFullscreen) {
+                                                            document.exitFullscreen().catch(() => { });
+                                                        } else if (document.webkitExitFullscreen) {
+                                                            document.webkitExitFullscreen();
+                                                        }
+                                                    }
+
                                                     // Show replay button
                                                     const replayBtn = document.createElement('button');
                                                     replayBtn.id = 'replay-btn';
@@ -5210,6 +5567,15 @@
 
             // Seal Button Click Handler
             document.getElementById('go-btn').addEventListener('click', (e) => {
+                // Request Fullscreen on first interaction to maximize immersion
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen().catch((err) => {
+                        console.log("Fullscreen request ignored/failed: ", err);
+                    });
+                } else if (document.documentElement.webkitRequestFullscreen) { /* Safari */
+                    document.documentElement.webkitRequestFullscreen();
+                }
+
                 const keypad = document.getElementById('magic-keypad');
 
                 if (isLocked) {
