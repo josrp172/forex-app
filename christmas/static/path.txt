@@ -10,3 +10,4 @@ Kim | tree,snow,gift,bell,star,candle,tree,gift,star,bell
 Levay | star,tree,snow,candle,gift,bell,star,snow,bell,candle
 Denver | tree,bell,star,gift,candle,snow,tree,star,bell,gift
 Rio | snow,candle,tree,star,bell,gift,snow,tree,candle,star
+Droo | candle,tree,star,snow,bell,gift,candle,tree,star,snow
