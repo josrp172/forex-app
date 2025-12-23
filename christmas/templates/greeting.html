@@ -401,9 +401,9 @@
         .photo-img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover;
             filter: blur(45px) contrast(1.1) brightness(1.2);
-            /* Removed initial scale to fit properly */
+            /* Removed initial scale to fill exactly */
         }
 
         .photo-glint {
@@ -6137,7 +6137,7 @@
                     const photoBox = document.getElementById('photo-box');
 
                     if (photoImg) {
-                        photoImg.style.transform = `scale(1.05) translate(${currentMouseX * 10}px, ${currentMouseY * 10}px)`;
+                        photoImg.style.transform = `scale(1.02) translate(${currentMouseX * 10}px, ${currentMouseY * 10}px)`;
                     }
                     if (photoBox) {
                         photoBox.style.transform = `perspective(1000px) rotateY(${currentMouseX * 5}deg) rotateX(${-currentMouseY * 5}deg)`;
